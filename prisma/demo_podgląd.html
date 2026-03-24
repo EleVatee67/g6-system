@@ -1,0 +1,2649 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OsloRP G6 SYSTEM - Podgląd Demo</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        :root {
+            --primary-color: 34, 197, 94;
+            --primary-rgb: rgba(var(--primary-color), 1);
+        }
+        body {
+            background: 
+                linear-gradient(rgba(0, 0, 0, 0.85), rgba(0, 0, 0, 0.95)),
+                url('https://wallpapers.com/images/featured/gta-5-background-4k-4u0m8r1q8f7m8p2n.jpg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            color: #e2e8f0;
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+        }
+        .card {
+            background: rgba(0, 20, 0, 0.4);
+            border: 1px solid rgba(var(--primary-color), 0.15);
+            border-radius: 24px;
+            padding: 24px;
+            backdrop-filter: blur(30px);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 15px 45px rgba(0, 0, 0, 0.6);
+            position: relative;
+            overflow: hidden;
+        }
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(var(--primary-color), 0.05), transparent);
+            transition: 0.5s;
+        }
+        .card:hover::before {
+            left: 100%;
+        }
+        .card:hover {
+            border-color: rgba(var(--primary-color), 0.4);
+            background: rgba(0, 40, 0, 0.5);
+            transform: translateY(-5px);
+            box-shadow: 0 20px 60px rgba(var(--primary-color), 0.15);
+        }
+
+        /* Liquid Glass Buttons */
+        .btn-liquid {
+            position: relative;
+            background: rgba(var(--primary-color), 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(var(--primary-color), 0.3);
+            border-radius: 16px;
+            color: white;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow: hidden;
+            z-index: 1;
+        }
+        .btn-liquid::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(var(--primary-color), 0.4) 0%, transparent 70%);
+            transform: scale(0);
+            transition: transform 0.6s ease;
+            z-index: -1;
+        }
+        .btn-liquid:hover::after {
+            transform: scale(1);
+        }
+        .btn-liquid:hover {
+            border-color: rgba(var(--primary-color), 0.8);
+            box-shadow: 0 0 30px rgba(var(--primary-color), 0.3);
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, rgba(var(--primary-color), 0.4) 0%, rgba(5, 46, 22, 0.6) 100%);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(var(--primary-color), 0.4);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+        .btn-primary:hover {
+            background: linear-gradient(135deg, rgba(var(--primary-color), 0.6) 0%, rgba(5, 46, 22, 0.8) 100%);
+            border-color: rgba(var(--primary-color), 1);
+            transform: translateY(-2px);
+            box-shadow: 0 12px 40px rgba(var(--primary-color), 0.4);
+        }
+
+        /* Utility classes for dynamic colors */
+        .text-green-500 { color: rgb(var(--primary-color)); }
+        .bg-green-500 { background-color: rgb(var(--primary-color)); }
+        .bg-green-600 { background-color: rgba(var(--primary-color), 0.8); }
+        .border-green-500 { border-color: rgb(var(--primary-color)); }
+        .border-green-900\/20 { border-color: rgba(var(--primary-color), 0.2); }
+        .border-green-900\/30 { border-color: rgba(var(--primary-color), 0.3); }
+        .border-green-900\/40 { border-color: rgba(var(--primary-color), 0.4); }
+        .bg-green-500\/10 { background-color: rgba(var(--primary-color), 0.1); }
+        .bg-green-500\/20 { background-color: rgba(var(--primary-color), 0.2); }
+        .bg-green-500\/5 { background-color: rgba(var(--primary-color), 0.05); }
+        .shadow-\[0_0_10px_\#22c55e\] { box-shadow: 0 0 10px rgb(var(--primary-color)); }
+        .shadow-\[0_0_20px_rgba\(34\,197\,94\,0\.5\)\] { box-shadow: 0 0 20px rgba(var(--primary-color), 0.5); }
+        .shadow-\[0_0_25px_rgba\(22\,163\,74\,0\.6\)\] { box-shadow: 0 0 25px rgba(var(--primary-color), 0.6); }
+        .shadow-\[0_0_40px_rgba\(34\,197\,94\,0\.3\)\] { box-shadow: 0 0 40px rgba(var(--primary-color), 0.3); }
+        .shadow-\[0_0_30px_rgba\(34\,197\,94\,0\.2\)\] { box-shadow: 0 0 30px rgba(var(--primary-color), 0.2); }
+        .shadow-\[0_0_15px_rgba\(34\,197\,94\,0\.3\)\] { box-shadow: 0 0 15px rgba(var(--primary-color), 0.3); }
+        .shadow-\[0_0_15px_rgba\(34\,197\,94\,0\.2\)\] { box-shadow: 0 0 15px rgba(var(--primary-color), 0.2); }
+        .ring-green-500\/10 { --tw-ring-color: rgba(var(--primary-color), 0.1); }
+        .focus\:border-green-500:focus { border-color: rgb(var(--primary-color)); }
+        .focus\:ring-green-500\/10:focus { --tw-ring-color: rgba(var(--primary-color), 0.1); }
+        .hover\:border-green-500\/50:hover { border-color: rgba(var(--primary-color), 0.5); }
+        .hover\:border-green-500\/60:hover { border-color: rgba(var(--primary-color), 0.6); }
+        .hover\:bg-green-500\/5:hover { background-color: rgba(var(--primary-color), 0.05); }
+        .hover\:text-green-400:hover { color: rgba(var(--primary-color), 0.8); }
+        .group-hover\:text-green-400:hover { color: rgba(var(--primary-color), 0.8); }
+        .text-green-500\/60 { color: rgba(var(--primary-color), 0.6); }
+
+        .subunit-badge {
+            background: rgba(220, 38, 38, 0.15);
+            border: 1px solid rgba(220, 38, 38, 0.4);
+            color: #ef4444;
+            padding: 4px 12px;
+            border-radius: 8px;
+            font-size: 0.65rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            box-shadow: 0 0 15px rgba(220, 38, 38, 0.1);
+        }
+        .subunit-badge:hover {
+            background: rgba(220, 38, 38, 0.25);
+            border-color: #ef4444;
+            box-shadow: 0 0 20px rgba(220, 38, 38, 0.3);
+        }
+
+        .btn-discord {
+            background: rgba(88, 101, 242, 0.2);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(88, 101, 242, 0.4);
+        }
+        .btn-discord:hover {
+            background: rgba(88, 101, 242, 0.4);
+            border-color: #5865F2;
+            box-shadow: 0 0 30px rgba(88, 101, 242, 0.3);
+        }
+
+        .badge {
+            background: rgba(0, 20, 0, 0.5);
+            border: 1px solid rgba(var(--primary-color), 0.2);
+            backdrop-filter: blur(15px);
+        }
+        .badge:hover {
+            border-color: rgb(var(--primary-color));
+            background: rgba(var(--primary-color), 0.1);
+            transform: scale(1.05);
+            box-shadow: 0 0 15px rgba(var(--primary-color), 0.2);
+        }
+        .hidden {
+            display: none !important;
+        }
+        .nav-active {
+            color: rgb(var(--primary-color));
+            position: relative;
+            text-shadow: 0 0 10px rgba(var(--primary-color), 0.5);
+        }
+        .nav-active::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, rgb(var(--primary-color)), transparent);
+            box-shadow: 0 0 12px rgb(var(--primary-color));
+        }
+        .input-dark {
+            background: rgba(0, 0, 0, 0.7);
+            border: 1px solid rgba(var(--primary-color), 0.3);
+            border-radius: 12px;
+            padding: 14px;
+            color: white;
+            width: 100%;
+            outline: none;
+            transition: all 0.2s;
+        }
+        .input-dark:focus {
+            border-color: rgb(var(--primary-color));
+            background: rgba(0, 0, 0, 0.9);
+            box-shadow: 0 0 15px rgba(var(--primary-color), 0.2);
+        }
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #000;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(var(--primary-color), 0.8);
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgb(var(--primary-color));
+        }
+
+        /* Notification System */
+        #notification-container {
+            position: fixed;
+            top: 24px;
+            right: 24px;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            pointer-events: none;
+        }
+        .notification {
+            background: rgba(0, 0, 0, 0.9);
+            border: 1px solid rgba(var(--primary-color), 0.3);
+            border-left: 4px solid rgb(var(--primary-color));
+            padding: 16px 24px;
+            border-radius: 12px;
+            color: white;
+            min-width: 300px;
+            backdrop-filter: blur(10px);
+            pointer-events: auto;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            animation: slideInRight 0.4s ease forwards;
+        }
+        .notification.ping {
+            border-left-color: #5865F2;
+        }
+        @keyframes slideInRight {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        @keyframes fadeOut {
+            from { opacity: 1; }
+            to { opacity: 0; }
+        }
+
+        /* Dropdown Menu */
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: rgba(0, 20, 0, 0.9);
+            border: 1px solid rgba(34, 197, 94, 0.2);
+            min-width: 220px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.5);
+            z-index: 1;
+            border-radius: 12px;
+            padding: 8px;
+            backdrop-filter: blur(20px);
+            animation: fadeIn 0.3s ease;
+            margin-top: 16px;
+        }
+        .dropdown-content a {
+            color: #a0aec0;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 0.75rem;
+            text-transform: none;
+            letter-spacing: 0.05em;
+            border-radius: 8px;
+            font-weight: 700;
+        }
+        .dropdown-content a:hover {
+            background-color: rgba(34, 197, 94, 0.1);
+            color: #22c55e;
+        }
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+        .dropdown-header {
+            font-size: 0.65rem;
+            padding: 8px 16px;
+            color: #4a5568;
+            text-transform: uppercase;
+            font-weight: 900;
+            letter-spacing: 0.1em;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* New Sidebar Layout */
+        .main-container {
+            display: flex;
+        }
+        #sidebar {
+            width: 280px;
+            background: rgba(0, 10, 0, 0.8);
+            border-right: 1px solid rgba(34, 197, 94, 0.2);
+            backdrop-filter: blur(25px);
+            min-height: 100vh;
+            transition: width 0.3s ease;
+            padding: 24px;
+        }
+        #content-area {
+            flex: 1;
+            padding: 40px;
+            overflow-y: auto;
+            height: 100vh;
+        }
+        .sidebar-nav-link {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 14px;
+            border-radius: 10px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            font-size: 0.7rem;
+            color: #a0aec0;
+            transition: all 0.2s;
+        }
+        .sidebar-nav-link:hover {
+            background: rgba(34, 197, 94, 0.1);
+            color: #22c55e;
+        }
+        .sidebar-nav-link.nav-active {
+            background: #16a34a;
+            color: black;
+            box-shadow: 0 0 20px rgba(34, 197, 94, 0.4);
+        }
+        .sidebar-header {
+            font-size: 0.65rem;
+            padding: 16px 16px 8px;
+            color: #4a5568;
+            font-weight: 900;
+            letter-spacing: 0.1em;
+        }
+
+        /* Date Picker Styles */
+        input[type="date"]::-webkit-calendar-picker-indicator {
+            filter: invert(1) brightness(0.8) sepia(1) hue-rotate(100deg);
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div id="login-screen" class="fixed inset-0 z-[200] flex items-center justify-center bg-black/95 backdrop-blur-lg">
+        <!-- LOGIN VIEW -->
+        <div id="login-form-view" class="w-full max-w-md text-center space-y-8 animate-in fade-in duration-1000">
+            <div class="flex flex-col items-center gap-4">
+                <div class="bg-green-600 p-4 rounded-2xl shadow-[0_0_25px_rgba(22,163,74,0.6)]">
+                    <i data-lucide="shield" class="text-black w-12 h-12"></i>
+                </div>
+                <h1 class="text-5xl font-black tracking-tighter uppercase bg-gradient-to-r from-white via-green-400 to-green-600 bg-clip-text text-transparent"><span class="text-blue-500">OsloRP</span> G6 System</h1>
+                <p class="text-gray-500 font-bold text-[10px] uppercase tracking-[0.3em]">Autoryzacja Danych</p>
+            </div>
+
+            <div class="space-y-4 px-6">
+                <div class="space-y-2">
+                    <input type="text" id="login-nick" class="input-dark text-center uppercase tracking-widest text-xs" placeholder="Nick na Oslo">
+                </div>
+                <div class="relative">
+                    <input type="password" id="login-password" class="input-dark text-center tracking-[0.5em] text-xs" placeholder="••••••••">
+                    <button onclick="togglePasswordVisibility('login-password')" class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 hover:text-green-500 transition-all">
+                        <i data-lucide="eye" size="16"></i>
+                    </button>
+                </div>
+                <button onclick="loginWithCredentials()" class="btn-primary w-full py-5 rounded-2xl font-black text-xs uppercase tracking-[0.3em] transition-all shadow-lg">
+                    Zaloguj do Systemu
+                </button>
+            </div>
+
+            <div class="flex items-center gap-4 py-2 px-6">
+                <div class="h-[1px] flex-1 bg-green-900/30"></div>
+                <span class="text-[9px] font-black text-gray-600 uppercase tracking-widest">LUB</span>
+                <div class="h-[1px] flex-1 bg-green-900/30"></div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-4 px-6">
+                <button onclick="loginWithDiscord()" class="btn-discord py-4 rounded-xl font-black text-[10px] uppercase tracking-widest flex items-center justify-center gap-3">
+                    <i data-lucide="message-square" size="14"></i>
+                    Discord
+                </button>
+                <button onclick="loginAsGuest()" class="py-4 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 text-gray-400 hover:text-white transition-all font-black text-[10px] uppercase tracking-widest flex items-center justify-center gap-3">
+                    <i data-lucide="user" size="14"></i>
+                    Gość
+                </button>
+            </div>
+
+            <p class="text-[9px] text-gray-600 uppercase font-black tracking-widest mt-6">
+                Nie masz konta? 
+                <button onclick="showRegisterView()" class="text-green-500 hover:underline">Zarejestruj się</button>
+            </p>
+        </div>
+
+        <!-- REGISTER VIEW -->
+        <div id="register-form-view" class="hidden w-full max-w-md text-center space-y-8 animate-in zoom-in-95 duration-500">
+            <div class="flex flex-col items-center gap-4">
+                <div class="bg-green-600 p-4 rounded-2xl shadow-[0_0_25px_rgba(22,163,74,0.6)]">
+                    <i data-lucide="user-plus" class="text-black w-12 h-12"></i>
+                </div>
+                <h1 class="text-5xl font-black tracking-tighter uppercase bg-gradient-to-r from-white via-green-400 to-green-600 bg-clip-text text-transparent">Rejestracja</h1>
+                <p class="text-gray-500 font-bold text-[10px] uppercase tracking-[0.3em]">Utwórz Nowy Profil <span class="text-blue-500">OsloRP</span> G6</p>
+            </div>
+
+            <div class="space-y-4 px-6">
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="space-y-2">
+                        <label class="text-[9px] font-black text-green-500/60 uppercase tracking-widest text-left block ml-2">Nick Oslo</label>
+                        <input type="text" id="reg-nick" class="input-dark text-xs uppercase tracking-widest" placeholder="np. MATTSTONE">
+                    </div>
+                    <div class="space-y-2">
+                        <label class="text-[9px] font-black text-green-500/60 uppercase tracking-widest text-left block ml-2">Discord ID</label>
+                        <input type="text" id="reg-discord-id" class="input-dark text-xs" placeholder="123456789...">
+                    </div>
+                </div>
+                <div class="space-y-2">
+                    <label class="text-[9px] font-black text-green-500/60 uppercase tracking-widest text-left block ml-2">Imię i Nazwisko IC</label>
+                    <input type="text" id="reg-full-name" class="input-dark text-xs uppercase tracking-widest" placeholder="np. MATT STONE">
+                </div>
+                <div class="space-y-2">
+                    <label class="text-[9px] font-black text-green-500/60 uppercase tracking-widest text-left block ml-2">Hasło Dostępu</label>
+                    <div class="relative">
+                        <input type="password" id="reg-password" class="input-dark tracking-[0.5em] text-xs" placeholder="••••••••">
+                        <button onclick="togglePasswordVisibility('reg-password')" class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 hover:text-green-500 transition-all">
+                            <i data-lucide="eye" size="16"></i>
+                        </button>
+                    </div>
+                </div>
+                <button onclick="processRegistration()" class="btn-primary w-full py-5 rounded-2xl font-black text-xs uppercase tracking-[0.3em] transition-all shadow-lg mt-4">
+                    Utwórz Konto <span class="text-blue-400">OsloRP</span> G6
+                </button>
+            </div>
+
+            <button onclick="showLoginView()" class="text-gray-600 hover:text-white text-[9px] font-black uppercase tracking-widest transition-all">
+                Wróć do logowania
+            </button>
+        </div>
+    </div>
+
+    <div id="app-container" class="hidden main-container">
+        <!-- Sidebar Navigation -->
+        <aside id="sidebar" class="flex flex-col">
+            <div class="flex items-center gap-3 mb-12 px-2">
+                <div class="bg-green-600 p-1.5 rounded-lg">
+                    <i data-lucide="shield" class="text-black w-5 h-5"></i>
+                </div>
+                <span class="text-lg font-black tracking-tighter uppercase text-white"><span class="text-blue-500">OsloRP</span> G6 <span class="text-green-500">System</span></span>
+            </div>
+
+            <nav class="flex-1 space-y-2 overflow-y-auto pr-2 custom-scrollbar">
+                <div class="sidebar-header">Główny Panel</div>
+                <a href="#" onclick="showView('dashboard')" id="nav-dashboard" class="sidebar-nav-link nav-active">
+                    <i data-lucide="layout-dashboard" size="18"></i> Dashboard
+                </a>
+                <a href="#" onclick="showView('events')" id="nav-events" class="sidebar-nav-link">
+                    <i data-lucide="calendar" size="18"></i> Wydarzenia
+                </a>
+                
+                <div class="sidebar-header">Służba</div>
+                <a href="#" onclick="showView('reports')" id="nav-reports" class="sidebar-nav-link">
+                    <i data-lucide="file-text" size="18"></i> Raporty
+                </a>
+                <a href="#" onclick="showView('vacations')" id="nav-vacations" class="sidebar-nav-link">
+                    <i data-lucide="plane" size="18"></i> Urlopy
+                </a>
+                <a href="#" onclick="showView('ranking')" id="nav-ranking" class="sidebar-nav-link">
+                    <i data-lucide="trophy" size="18"></i> Ranking
+                </a>
+
+                <div class="sidebar-header">Frakcja</div>
+                <a href="#" onclick="showView('players')" id="nav-players" class="sidebar-nav-link">
+                    <i data-lucide="users" size="18"></i> Lista Graczy
+                </a>
+                
+                <div class="sidebar-header">Użytkownik</div>
+                <a href="#" onclick="showView('profile')" id="nav-profile" class="sidebar-nav-link">
+                    <i data-lucide="user" size="18"></i> Twój Profil
+                </a>
+                <a href="#" onclick="toggleSettingsModal()" id="nav-settings" class="sidebar-nav-link">
+                    <i data-lucide="settings" size="18"></i> Ustawienia
+                </a>
+
+                <div id="sidebar-admin-section" class="hidden">
+                    <div class="sidebar-header text-red-500/50">Administracja</div>
+                    <a href="#" onclick="showView('admin-panel')" id="nav-admin-panel" class="sidebar-nav-link border border-red-500/10 hover:bg-red-500/5 hover:text-red-500">
+                        <i data-lucide="shield-alert" size="18"></i> Panel Admina
+                    </a>
+                </div>
+            </nav>
+
+            <div class="mt-auto pt-8 border-t border-green-900/20">
+                <div class="flex items-center gap-4 px-2 mb-6">
+                    <img id="nav-avatar" src="" class="w-10 h-10 rounded-xl border border-green-500/30">
+                    <div class="overflow-hidden">
+                        <div id="nav-user-name" class="text-xs font-black text-white truncate">Matt Stone</div>
+                        <div id="nav-user-rank" class="text-[9px] text-green-500 font-bold uppercase truncate">Senior Officer</div>
+                    </div>
+                </div>
+                <button onclick="logout()" class="w-full flex items-center gap-4 p-4 rounded-xl text-red-500/60 hover:text-red-500 hover:bg-red-500/5 transition-all font-black text-[10px] uppercase tracking-widest">
+                    <i data-lucide="log-out" size="18"></i> Wyloguj Systemowo
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <div id="content-area">
+            <!-- DASHBOARD VIEW -->
+            <div id="dashboard-view" class="space-y-12 animate-in fade-in duration-700">
+                <header class="flex justify-between items-center bg-black/40 p-8 rounded-3xl border border-green-900/20 backdrop-blur-md">
+                    <div class="space-y-2">
+                        <h1 class="text-5xl font-black text-white tracking-tighter uppercase leading-none">Witaj, <span id="welcome-name" class="text-green-500">Matt Stone</span></h1>
+                        <div id="dashboard-discord-info" class="flex items-center gap-2 text-[#5865F2] font-black text-xs uppercase tracking-widest opacity-80 mt-1">
+                            <i data-lucide="message-square" size="14"></i>
+                            <span id="dashboard-display-discord-nick">Nick#0000</span> | ID: <span id="dashboard-display-discord-id">---</span>
+                        </div>
+                        <div class="flex flex-col gap-2 mt-2">
+                            <div id="discord-sync-status" class="flex items-center gap-2">
+                                <div class="w-2 h-2 bg-green-500 rounded-full animate-pulse shadow-[0_0_10px_#22c55e]"></div>
+                                <p class="text-gray-400 font-bold text-xs uppercase tracking-[0.2em]">Discord: <span class="text-green-500">Zalogowano</span></p>
+                            </div>
+                            <div id="user-activity-status-box" class="flex items-center gap-2 opacity-60">
+                                <div id="activity-dot" class="w-2 h-2 bg-gray-500 rounded-full"></div>
+                                <p class="text-gray-500 font-bold text-[10px] uppercase tracking-[0.2em]">Status: <span id="activity-text">Nieaktywny</span></p>
+                            </div>
+                        </div>
+                    </div>
+                    <button onclick="showView('events')" class="btn-primary px-10 py-4 rounded-2xl font-black flex items-center gap-4 tracking-widest text-sm uppercase">
+                        <i data-lucide="calendar-days" size="20"></i>
+                        Zobacz Wydarzenia
+                    </button>
+                </header>
+
+                <!-- Stats -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                    <div class="card flex items-center gap-6 cursor-pointer hover:scale-105" onclick="showView('reports')">
+                        <div class="p-5 bg-green-500/10 rounded-2xl text-green-500 border border-green-500/20"><i data-lucide="file-text" size="32"></i></div>
+                        <div><div class="text-gray-500 text-[10px] font-black uppercase tracking-widest">Twoje Raporty</div><div class="text-4xl font-black text-white">48</div></div>
+                    </div>
+                    <div class="card flex items-center gap-6">
+                        <div class="p-5 bg-green-500/10 rounded-2xl text-green-500 border border-green-500/20"><i data-lucide="hash" size="32"></i></div>
+                        <div><div class="text-gray-500 text-[10px] font-black uppercase tracking-widest">Nr Odznaki</div><div id="dashboard-badge-display" class="text-4xl font-black text-white">4492</div></div>
+                    </div>
+                    <div class="card flex items-center gap-6">
+                        <div class="p-5 bg-green-500/10 rounded-2xl text-green-500 border border-green-500/20"><i data-lucide="clock" size="32"></i></div>
+                        <div><div class="text-gray-500 text-[10px] font-black uppercase tracking-widest">Służba</div><div id="dashboard-hours-display" class="text-4xl font-black text-white">124H</div></div>
+                    </div>
+                    <div class="card flex items-center gap-6 border-green-500/40 bg-green-500/10 cursor-pointer hover:scale-105" onclick="showView('ranking')">
+                        <div class="p-5 bg-green-500/20 rounded-2xl text-green-400 shadow-[0_0_20px_rgba(34,197,94,0.3)]"><i data-lucide="zap" size="32"></i></div>
+                        <div><div class="text-green-500/60 text-[10px] font-black uppercase tracking-widest">Ranking</div><div class="text-4xl font-black text-white">#2</div></div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-12">
+                    <div class="lg:col-span-2 space-y-8">
+                        <h2 class="text-3xl font-black flex items-center gap-4 text-white uppercase tracking-tighter"><i data-lucide="users" class="text-green-500"></i> Aktywni na Służbie</h2>
+                        <div id="active-duty-list" class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                            <!-- Will be populated by JS -->
+                            <div class="card bg-black/40 border-green-900/20 flex items-center gap-4 p-4">
+                                <div class="relative">
+                                    <img src="https://ui-avatars.com/api/?name=John+Doe&background=000&color=22c55e" class="w-12 h-12 rounded-xl border border-green-500/30">
+                                    <div class="absolute -bottom-1 -right-1 w-3 h-3 bg-green-500 rounded-full border-2 border-black"></div>
+                                </div>
+                                <div>
+                                    <div class="font-black text-white text-sm uppercase">John Doe</div>
+                                    <div class="text-[9px] text-green-500 font-black uppercase tracking-widest">Kapitan I | Online</div>
+                                </div>
+                            </div>
+                            <div id="self-active-card" class="hidden card bg-green-500/5 border-green-500/30 flex items-center gap-4 p-4">
+                                <div class="relative">
+                                    <img id="active-duty-self-avatar" src="" class="w-12 h-12 rounded-xl border border-green-500/50">
+                                    <div class="absolute -bottom-1 -right-1 w-3 h-3 bg-green-500 rounded-full border-2 border-black animate-pulse"></div>
+                                </div>
+                                <div>
+                                    <div id="active-duty-self-name" class="font-black text-white text-sm uppercase">Matt Stone</div>
+                                    <div class="text-[9px] text-green-500 font-black uppercase tracking-widest">Senior Officer | Online</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- VACATIONS VIEW -->
+            <div id="vacations-view" class="hidden space-y-12 animate-in slide-in-from-bottom-8 duration-700">
+                <header class="flex justify-between items-center bg-black/40 p-8 rounded-3xl border border-green-900/20 backdrop-blur-md">
+                    <div>
+                        <h1 class="text-5xl font-black text-white tracking-tighter uppercase">Centrum <span class="text-green-500">Urlopowe</span></h1>
+                        <p class="text-gray-500 font-bold text-xs uppercase tracking-widest mt-1">Zgłoś swoją niedostępność w systemie.</p>
+                    </div>
+                    <button onclick="toggleVacationForm()" class="btn-primary px-10 py-4 rounded-2xl font-black flex items-center gap-4 tracking-widest text-sm uppercase">
+                        <i data-lucide="plane-takeoff" size="20"></i>
+                        Złóż Wniosek
+                    </button>
+                </header>
+
+                <div id="vacation-form-container" class="hidden animate-in zoom-in-95 duration-500">
+                    <div class="card space-y-10 border-green-500/40 bg-black/80 ring-2 ring-green-500/10 p-12">
+                        <div class="flex items-center justify-between border-b border-green-900/40 pb-6">
+                            <h2 class="text-2xl font-black flex items-center gap-4 text-white uppercase tracking-widest">
+                                <i data-lucide="clipboard-list" class="text-green-500"></i>
+                                Nowy Wniosek o Urlop
+                            </h2>
+                            <button onclick="toggleVacationForm()" class="text-gray-500 hover:text-red-500 transition-all">
+                                <i data-lucide="x" size="28"></i>
+                            </button>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+                            <div class="space-y-8">
+                                <div class="grid grid-cols-2 gap-6">
+                                    <div class="space-y-3">
+                                        <label class="text-[10px] font-black text-green-500 uppercase tracking-widest">Data Rozpoczęcia</label>
+                                        <input type="date" id="vacation-start-date" class="input-dark font-bold">
+                                    </div>
+                                    <div class="space-y-3">
+                                        <label class="text-[10px] font-black text-green-500 uppercase tracking-widest">Godzina</label>
+                                        <input type="time" id="vacation-start-time" class="input-dark font-bold">
+                                    </div>
+                                </div>
+                                <div class="grid grid-cols-2 gap-6">
+                                    <div class="space-y-3">
+                                        <label class="text-[10px] font-black text-green-500 uppercase tracking-widest">Data Zakończenia</label>
+                                        <input type="date" id="vacation-end-date" class="input-dark font-bold">
+                                    </div>
+                                    <div class="space-y-3">
+                                        <label class="text-[10px] font-black text-green-500 uppercase tracking-widest">Godzina</label>
+                                        <input type="time" id="vacation-end-time" class="input-dark font-bold">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="space-y-3">
+                                <label class="text-[10px] font-black text-green-500 uppercase tracking-widest">Powód Nieobecności</label>
+                                <textarea id="vacation-reason" class="w-full h-full min-h-[180px] bg-black border border-green-900/40 rounded-2xl p-6 text-white focus:border-green-500 outline-none transition-all" placeholder="Wpisz powód urlopu..."></textarea>
+                            </div>
+                        </div>
+
+                        <button onclick="submitVacation()" class="btn-primary w-full py-6 rounded-3xl font-black flex items-center justify-center gap-6 text-lg uppercase tracking-[0.4em]">
+                            <i data-lucide="send" size="28"></i>
+                            Wyślij Wniosek do Dowództwa
+                        </button>
+                    </div>
+                </div>
+
+                <div class="space-y-8">
+                    <h2 class="text-3xl font-black flex items-center gap-4 text-white uppercase tracking-tighter">
+                        <i data-lucide="history" class="text-green-500"></i> 
+                        Twoje Urlopy
+                    </h2>
+                    <div id="vacations-list" class="grid grid-cols-1 gap-6">
+                        <!-- Sample Vacation -->
+                        <div class="card bg-black/40 border-green-900/20 flex flex-col md:flex-row md:items-center justify-between gap-8 p-8">
+                            <div class="flex items-center gap-6">
+                                <div class="p-4 bg-green-500/10 rounded-2xl text-green-500 border border-green-500/20">
+                                    <i data-lucide="plane" size="28"></i>
+                                </div>
+                                <div>
+                                    <div class="text-white font-black text-xl uppercase tracking-tight">Urlop Wypoczynkowy</div>
+                                    <div class="text-gray-500 text-[10px] font-black uppercase tracking-widest mt-1">Status: <span class="text-yellow-500">Oczekiwanie</span></div>
+                                </div>
+                            </div>
+                            <div class="flex flex-col md:flex-row gap-12">
+                                <div class="text-center md:text-left">
+                                    <div class="text-[9px] text-green-500/60 font-black uppercase tracking-widest mb-1">Początek</div>
+                                    <div class="text-white font-bold text-sm">25.03.2026 | 08:00</div>
+                                </div>
+                                <div class="text-center md:text-left">
+                                    <div class="text-[9px] text-green-500/60 font-black uppercase tracking-widest mb-1">Koniec</div>
+                                    <div class="text-white font-bold text-sm">01.04.2026 | 20:00</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- EVENTS VIEW -->
+            <div id="events-view" class="hidden space-y-12 animate-in slide-in-from-top-8 duration-700">
+                <header class="flex justify-between items-center bg-black/40 p-8 rounded-3xl border border-green-900/20 backdrop-blur-md">
+                    <div>
+                        <h1 class="text-5xl font-black text-white tracking-tighter uppercase">Wydarzenia <span class="text-green-500">& Eventy</span></h1>
+                        <p class="text-gray-500 font-bold text-xs uppercase tracking-widest mt-1">Planowane operacje i spotkania frakcyjne.</p>
+                    </div>
+                    <button id="new-event-btn" onclick="toggleEventForm()" class="btn-primary px-10 py-4 rounded-2xl font-black flex items-center gap-4 tracking-widest text-sm uppercase">
+                        <i data-lucide="calendar-plus" size="20"></i>
+                        Nowy Event
+                    </button>
+                </header>
+
+                <div id="event-form-container" class="hidden animate-in zoom-in-95 duration-500">
+                    <div class="card space-y-10 border-green-500/40 bg-black/80 ring-2 ring-green-500/10">
+                        <div class="flex items-center justify-between border-b border-green-900/40 pb-6">
+                            <h2 class="text-2xl font-black flex items-center gap-4 text-white uppercase tracking-widest">
+                                <i data-lucide="megaphone" class="text-green-500"></i>
+                                Stwórz Ogłoszenie
+                            </h2>
+                            <button onclick="toggleEventForm()" class="text-gray-500 hover:text-red-500 transition-all hover:rotate-90">
+                                <i data-lucide="x" size="28"></i>
+                            </button>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+                            <div class="space-y-6">
+                                <div class="space-y-3">
+                                    <label class="text-[10px] font-black text-green-500 uppercase tracking-[0.3em]">Tytuł Wydarzenia</label>
+                                    <input type="text" id="event-title" class="input-dark font-bold" placeholder="np. Trening Taktyczny">
+                                </div>
+                                <div class="space-y-3">
+                                    <label class="text-[10px] font-black text-green-500 uppercase tracking-[0.3em]">Opis Wydarzenia</label>
+                                    <textarea id="event-content" class="w-full h-48 bg-black border border-green-900/40 rounded-3xl p-6 text-white focus:outline-none focus:border-green-500 focus:ring-4 focus:ring-green-500/10 transition-all font-medium text-lg placeholder:text-gray-800" placeholder="Szczegóły wydarzenia..."></textarea>
+                                </div>
+                            </div>
+
+                            <div class="space-y-4">
+                                <label class="text-[10px] font-black text-green-500 uppercase tracking-[0.3em]">Grafika Promocyjna</label>
+                                <div class="flex flex-col gap-6 h-64">
+                                    <label id="event-upload-label" class="flex-1 flex flex-col items-center justify-center gap-5 bg-black/60 border-2 border-dashed border-green-900/40 rounded-3xl cursor-pointer hover:bg-green-500/5 hover:border-green-500/60 transition-all group">
+                                        <div class="p-6 bg-green-500/10 rounded-full group-hover:scale-110 transition-transform">
+                                            <i data-lucide="image" class="text-green-500 w-12 h-12"></i>
+                                        </div>
+                                        <span class="text-xs text-gray-500 group-hover:text-green-400 font-black uppercase tracking-[0.2em]">Dodaj Zdjęcie</span>
+                                        <input type="file" accept="image/*" class="hidden" onchange="previewEventImage(event)">
+                                    </label>
+                                    <div id="event-image-preview-container" class="hidden relative flex-1 rounded-3xl overflow-hidden border-2 border-green-500/50 shadow-[0_0_30px_rgba(34,197,94,0.2)]">
+                                        <img id="event-image-preview" src="" class="w-full h-full object-cover">
+                                        <button onclick="removeEventImage()" class="absolute top-4 right-4 p-2 bg-red-600 text-white rounded-xl hover:bg-red-700 transition-all shadow-2xl">
+                                            <i data-lucide="trash-2" size="18"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button onclick="submitEvent()" class="btn-primary w-full py-6 rounded-3xl font-black flex items-center justify-center gap-6 text-lg uppercase tracking-[0.4em]">
+                            <i data-lucide="check-circle" size="28"></i>
+                            Opublikuj Wydarzenie
+                        </button>
+                    </div>
+                </div>
+
+                <div id="events-list" class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <!-- Sample Event -->
+                    <div class="card p-0 overflow-hidden border-green-500/20 group">
+                        <div class="h-48 overflow-hidden relative">
+                            <img src="https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?auto=format&fit=crop&q=80&w=800" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
+                            <div class="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent"></div>
+                            <div class="absolute bottom-6 left-8">
+                                <span class="px-3 py-1 bg-green-500 text-black text-[9px] font-black uppercase rounded-lg tracking-widest">Nadchodzące</span>
+                                <h3 class="text-2xl font-black text-white uppercase tracking-tighter mt-2">Wielki Trening <span class="text-blue-500">OsloRP</span> G6</h3>
+                            </div>
+                        </div>
+                        <div class="p-8 space-y-4">
+                            <p class="text-gray-400 text-sm leading-relaxed">Zapraszamy wszystkich członków na obowiązkowe szkolenie z zakresu technik operacyjnych w terenie miejskim. Obecność wymagana!</p>
+                            <div class="flex items-center justify-between pt-4 border-t border-green-900/20">
+                                <div class="flex items-center gap-3">
+                                    <i data-lucide="clock" class="text-green-500" size="16"></i>
+                                    <span class="text-[10px] text-gray-500 font-black uppercase tracking-widest">28.03.2026 | 20:00</span>
+                                </div>
+                                <div class="text-[10px] text-gray-500 font-black uppercase tracking-widest">Autor: John Doe</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PLAYERS VIEW -->
+            <div id="players-view" class="hidden space-y-12 animate-in slide-in-from-top-8 duration-700">
+                <header class="flex justify-between items-center bg-black/40 p-8 rounded-3xl border border-green-900/20 backdrop-blur-md">
+                    <div>
+                        <h1 class="text-5xl font-black text-white tracking-tighter uppercase">Lista <span class="text-green-500">Graczy</span></h1>
+                        <p class="text-gray-500 font-bold text-xs uppercase tracking-widest mt-1">Członkowie frakcji i ich statusy.</p>
+                    </div>
+                    <div class="p-4 bg-green-500/10 rounded-2xl border border-green-500/20 text-green-500">
+                        <i data-lucide="users" size="32"></i>
+                    </div>
+                </header>
+
+                <div id="all-players-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <!-- Players will be rendered here dynamically -->
+                </div>
+            </div>
+
+            <!-- RANKING VIEW -->
+            <div id="ranking-view" class="hidden space-y-12 animate-in slide-in-from-left-8 duration-700">
+                <header class="flex justify-between items-center bg-black/40 p-8 rounded-3xl border border-green-900/20 backdrop-blur-md">
+                    <div>
+                        <h1 class="text-5xl font-black text-white tracking-tighter uppercase">Ranking <span class="text-green-500">Frakcji</span></h1>
+                        <p class="text-gray-500 font-bold text-xs uppercase tracking-widest mt-1">Pozycja osób z frakcji na podstawie czasu służby.</p>
+                    </div>
+                    <div class="p-4 bg-green-500/10 rounded-2xl border border-green-500/20 text-green-500">
+                        <i data-lucide="trophy" size="32"></i>
+                    </div>
+                </header>
+
+                <div class="card border-green-500/30 bg-black/60 p-0 overflow-hidden shadow-2xl">
+                    <table class="w-full text-left">
+                        <thead class="bg-green-500/10 border-b border-green-900/30">
+                            <tr>
+                                <th class="px-8 py-5 text-[10px] font-black uppercase tracking-[0.3em] text-green-500">Poz.</th>
+                                <th class="px-8 py-5 text-[10px] font-black uppercase tracking-[0.3em] text-green-500">Oficer</th>
+                                <th class="px-8 py-5 text-[10px] font-black uppercase tracking-[0.3em] text-green-500">Stopień</th>
+                                <th class="px-8 py-5 text-[10px] font-black uppercase tracking-[0.3em] text-green-500 text-right">Przegrane Godziny</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-green-900/20 font-bold">
+                            <tr class="hover:bg-green-500/5 transition-colors">
+                                <td class="px-8 py-6">
+                                    <div class="flex items-center gap-3">
+                                        <span class="text-yellow-500 text-2xl font-black">#1</span>
+                                        <i data-lucide="crown" class="text-yellow-500" size="18"></i>
+                                    </div>
+                                </td>
+                                <td class="px-8 py-6">
+                                    <div class="flex items-center gap-3">
+                                        <img src="https://ui-avatars.com/api/?name=John+Doe&background=000&color=22c55e" class="w-10 h-10 rounded-xl border border-green-900/30">
+                                        <span class="text-white text-lg">John Doe</span>
+                                    </div>
+                                </td>
+                                <td class="px-8 py-6 text-gray-400 uppercase text-xs">Kapitan I</td>
+                                <td class="px-8 py-6 text-right text-green-500 text-xl font-black tracking-tight">248H</td>
+                            </tr>
+                            <tr class="bg-green-500/5 border-x-4 border-x-green-500 transition-colors">
+                                <td class="px-8 py-6">
+                                    <span class="text-white text-2xl font-black">#2</span>
+                                </td>
+                                <td class="px-8 py-6">
+                                    <div class="flex items-center gap-3">
+                                        <img id="ranking-self-avatar" src="" class="w-10 h-10 rounded-xl border border-green-900/30">
+                                        <span class="text-white text-lg font-black"><span class="report-user-name">Matt Stone</span> (Ty)</span>
+                                    </div>
+                                </td>
+                                <td id="ranking-self-rank" class="px-8 py-6 text-green-500/80 uppercase text-xs">Administrator</td>
+                                <td class="px-8 py-6 text-right text-green-500 text-xl font-black tracking-tight">124H</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- PROFILE VIEW -->
+            <div id="profile-view" class="hidden space-y-12 animate-in slide-in-from-right-8 duration-700">
+                <div id="profile-banner" class="w-full h-64 rounded-[40px] bg-cover bg-center border border-green-900/30 relative overflow-hidden group shadow-2xl">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent"></div>
+                </div>
+
+                <header class="flex flex-col md:flex-row md:items-center gap-10 bg-black/60 p-10 rounded-[40px] border border-green-900/30 backdrop-blur-xl -mt-32 relative z-10 mx-10">
+                    <div class="relative group">
+                        <div class="p-1.5 rounded-[32px] bg-gradient-to-tr from-green-500 via-transparent to-green-500 shadow-[0_0_40px_rgba(34,197,94,0.3)] group-hover:scale-105 transition-transform">
+                            <img id="profile-main-avatar" src="" class="w-48 h-48 rounded-[26px] border-4 border-black object-cover">
+                        </div>
+                        <div class="absolute -bottom-5 -right-5 bg-green-600 border-4 border-black p-4 rounded-3xl shadow-2xl">
+                            <i data-lucide="shield-check" class="text-black w-8 h-8"></i>
+                        </div>
+                    </div>
+                    <div class="flex-1 space-y-2">
+                        <div class="flex flex-col gap-1">
+                            <h1 id="profile-full-name" class="text-6xl font-black text-white tracking-tighter uppercase leading-none">Matt Stone</h1>
+                            <div id="profile-discord-info" class="hidden flex items-center gap-2 text-[#5865F2] font-black text-sm uppercase tracking-widest opacity-80">
+                                <i data-lucide="message-square" size="14"></i>
+                                <span id="display-discord-nick">Nick#0000</span> | ID: <span id="display-discord-id">123456789</span>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-5 mt-4">
+                            <p id="profile-rank" class="text-2xl text-green-500 font-black tracking-[0.4em] uppercase opacity-90">Administrator</p>
+                            <div id="profile-subunit-display" class="hidden"></div>
+                            <span class="px-6 py-2 bg-green-500 text-black text-[10px] font-black rounded-full uppercase tracking-[0.3em] shadow-[0_0_20px_rgba(34,197,94,0.5)]">Aktywny</span>
+                        </div>
+                        <div class="flex flex-wrap gap-8 pt-4">
+                            <div class="flex items-center gap-3 text-gray-400 text-sm font-black uppercase tracking-widest"><i data-lucide="hash" class="text-green-500" size="18"></i> <span id="profile-badge">4492</span></div>
+                            <div class="flex items-center gap-3 text-gray-400 text-sm font-black uppercase tracking-widest"><i data-lucide="map-pin" class="text-green-500" size="18"></i> Los Santos</div>
+                            <div class="flex items-center gap-3 text-gray-400 text-sm font-black uppercase tracking-widest"><i data-lucide="calendar" class="text-green-500" size="18"></i> <span id="profile-birth-date-display">15.05.1995</span></div>
+                        </div>
+                    </div>
+                    <div id="profile-actions" class="flex flex-col gap-4">
+                        <button onclick="toggleEditModal()" class="btn-liquid px-10 py-4 rounded-2xl font-black text-[10px] uppercase tracking-widest shadow-xl">Edytuj Profil</button>
+                        <button id="profile-admin-login-btn" onclick="showView('admin-login')" class="px-10 py-4 bg-red-600/10 hover:bg-red-600 text-red-500 hover:text-white rounded-2xl font-black text-[10px] uppercase tracking-widest border border-red-600/20 transition-all">Panel Admina</button>
+                    </div>
+                </header>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-12">
+                    <div class="lg:col-span-2 space-y-10">
+                        <h2 class="text-3xl font-black text-white uppercase tracking-tighter flex items-center gap-4">
+                            <i data-lucide="medal" class="text-yellow-500"></i>
+                            Osiągnięcia i Wyróżnienia
+                        </h2>
+                        <div id="profile-achievements" class="grid grid-cols-1 sm:grid-cols-2 gap-8">
+                            <!-- Achievements will be rendered here -->
+                        </div>
+                    </div>
+
+                    <div class="space-y-10">
+                        <h2 class="text-3xl font-black text-white uppercase tracking-tighter flex items-center gap-4">
+                            <i data-lucide="info" class="text-green-500"></i>
+                            Informacje
+                        </h2>
+                        <div class="card space-y-8 bg-black/60 border-green-900/40 p-10">
+                            <div class="space-y-2">
+                                <div class="text-[10px] text-green-500/60 font-black uppercase tracking-[0.2em]">Data Urodzenia</div>
+                                <div id="profile-birth-date" class="text-2xl font-black text-white">15.05.1995</div>
+                            </div>
+                            <div class="space-y-2">
+                                <div class="text-[10px] text-green-500/60 font-black uppercase tracking-[0.2em]">Tożsamość</div>
+                                <div id="info-full-name" class="text-2xl font-black text-white">Matt Stone</div>
+                            </div>
+                            <div class="space-y-2">
+                                <div class="text-[10px] text-green-500/60 font-black uppercase tracking-[0.2em]">Identyfikator</div>
+                                <div id="info-badge" class="text-2xl font-black text-green-500">#4492</div>
+                            </div>
+                            <div class="space-y-2">
+                                <div class="text-[10px] text-green-500/60 font-black uppercase tracking-[0.2em]">Szyfr Discord</div>
+                                <div id="info-discord-nick" class="text-xl font-bold text-white opacity-80">Nick#0000</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- REPORTS VIEW -->
+            <div id="reports-view" class="hidden space-y-12 animate-in slide-in-from-bottom-8 duration-700">
+                <header class="flex justify-between items-center bg-black/40 p-8 rounded-3xl border border-green-900/20 backdrop-blur-md">
+                    <div>
+                        <h1 id="reports-title" class="text-5xl font-black text-white tracking-tighter uppercase">Archiwum <span class="text-blue-500">OsloRP</span> <span class="text-green-500">G6</span></h1>
+                        <p id="reports-subtitle" class="text-gray-500 font-bold text-xs uppercase tracking-widest mt-1">Baza danych operacji i raportów.</p>
+                    </div>
+                    <div class="flex gap-4">
+                        <button onclick="toggleReportForm()" class="btn-primary px-10 py-4 rounded-2xl font-black flex items-center gap-4 tracking-widest text-sm uppercase">
+                            <i data-lucide="plus" size="20"></i>
+                            Dodaj Wpis
+                        </button>
+                    </div>
+                </header>
+
+                <div id="report-form-container" class="hidden animate-in zoom-in-95 duration-500">
+                    <div class="card space-y-10 border-green-500/40 bg-black/80 ring-2 ring-green-500/10 p-12">
+                        <div class="flex items-center justify-between border-b border-green-900/40 pb-6">
+                            <h2 class="text-2xl font-black flex items-center gap-4 text-white uppercase tracking-widest">
+                                <i data-lucide="file-plus" class="text-green-500"></i>
+                                Nowy Protokół Służbowy
+                            </h2>
+                            <button onclick="toggleReportForm()" class="text-gray-500 hover:text-red-500 transition-all hover:rotate-90">
+                                <i data-lucide="x" size="28"></i>
+                            </button>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+                            <div class="space-y-4">
+                                <label class="text-[10px] font-black text-green-500 uppercase tracking-[0.3em]">Szczegóły Interwencji</label>
+                                <textarea id="report-content" class="w-full h-80 bg-black border border-green-900/40 rounded-3xl p-6 text-white focus:outline-none focus:border-green-500 focus:ring-4 focus:ring-green-500/10 transition-all font-medium text-lg placeholder:text-gray-800" placeholder="Wpisz przebieg zdarzenia..."></textarea>
+                            </div>
+
+                            <div class="space-y-4">
+                                <label class="text-[10px] font-black text-green-500 uppercase tracking-[0.3em]">Dokumentacja Wizualna</label>
+                                <div class="flex flex-col gap-6 h-80">
+                                    <label id="upload-label" class="flex-1 flex flex-col items-center justify-center gap-5 bg-black/60 border-2 border-dashed border-green-900/40 rounded-3xl cursor-pointer hover:bg-green-500/5 hover:border-green-500/60 transition-all group">
+                                        <div class="p-6 bg-green-500/10 rounded-full group-hover:scale-110 transition-transform">
+                                            <i data-lucide="camera" class="text-green-500 w-12 h-12"></i>
+                                        </div>
+                                        <span class="text-xs text-gray-500 group-hover:text-green-400 font-black uppercase tracking-[0.2em]">Wgraj Dowód (Zdjęcie)</span>
+                                        <input type="file" accept="image/*" class="hidden" onchange="previewImage(event)">
+                                    </label>
+                                    <div id="image-preview-container" class="hidden relative flex-1 rounded-3xl overflow-hidden border-2 border-green-500/50 shadow-[0_0_30px_rgba(34,197,94,0.2)]">
+                                        <img id="image-preview" src="" class="w-full h-full object-cover">
+                                        <button onclick="removeImage()" class="absolute top-6 right-6 p-3 bg-red-600 text-white rounded-2xl hover:bg-red-700 transition-all shadow-2xl hover:scale-110">
+                                            <i data-lucide="trash-2" size="22"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button onclick="submitReport()" class="btn-primary w-full py-6 rounded-3xl font-black flex items-center justify-center gap-6 text-lg uppercase tracking-[0.4em]">
+                            <i data-lucide="shield-check" size="28"></i>
+                            Archiwizuj w Systemie
+                        </button>
+                    </div>
+                </div>
+
+                <div id="admin-reports-view" class="hidden space-y-8">
+                    <h2 class="text-3xl font-black flex items-center gap-4 text-white uppercase tracking-tighter">
+                        <i data-lucide="users" class="text-green-500"></i> 
+                        Raporty Wszystkich Graczy (Admin)
+                    </h2>
+                    <div id="all-reports-list" class="grid grid-cols-1 gap-8">
+                        <!-- Reports from all players will be dynamically inserted here -->
+                    </div>
+                </div>
+
+                <div id="user-reports-view" class="space-y-8">
+                    <h2 class="text-3xl font-black flex items-center gap-4 text-white uppercase tracking-tighter">
+                        <i data-lucide="file-text" class="text-green-500"></i> 
+                        Twoje Ostatnie Logi
+                    </h2>
+                    <div id="my-reports-list" class="grid grid-cols-1 gap-8">
+                        <!-- User's own reports will be here -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- ADMIN LOGIN VIEW -->
+            <div id="admin-login-view" class="hidden flex flex-col items-center justify-center min-h-[60vh] space-y-8 animate-in zoom-in-95 duration-500">
+                <div class="card w-full max-w-md space-y-8 border-red-500/20 bg-black/60 backdrop-blur-xl p-12 text-center">
+                    <div class="flex flex-col items-center gap-4">
+                        <div class="bg-red-600/20 p-4 rounded-2xl border border-red-600/40">
+                            <i data-lucide="shield-alert" class="text-red-500 w-12 h-12"></i>
+                        </div>
+                        <h2 class="text-3xl font-black text-white uppercase tracking-tighter">Weryfikacja Admina</h2>
+                        <p class="text-gray-500 text-[10px] font-black uppercase tracking-[0.2em]">Wprowadź kod autoryzacyjny <span class="text-blue-500">OsloRP</span> G6</p>
+            </div>
+            
+            <div class="space-y-4">
+                <input type="password" id="admin-password" class="input-dark text-center text-2xl tracking-[0.5em] border-red-500/20 focus:border-red-500" placeholder="••••">
+                <button onclick="loginToAdminPanel()" class="w-full py-5 bg-red-600 hover:bg-red-700 text-white rounded-2xl font-black text-xs uppercase tracking-[0.3em] transition-all shadow-[0_0_30px_rgba(220,38,38,0.3)]">Autoryzuj Dostęp</button>
+            </div>
+                    <button onclick="showView('profile')" class="text-gray-600 hover:text-white text-[10px] font-black uppercase tracking-widest transition-all">Powrót do profilu</button>
+                </div>
+            </div>
+
+            <!-- ADMIN PANEL VIEW -->
+            <div id="admin-panel-view" class="hidden space-y-12 animate-in slide-in-from-top-8 duration-700">
+                <header class="flex justify-between items-center bg-red-600/5 p-8 rounded-3xl border border-red-600/20 backdrop-blur-md">
+                    <div>
+                        <h1 class="text-5xl font-black text-white tracking-tighter uppercase">Panel <span class="text-red-500">Administracyjny</span></h1>
+                        <p class="text-gray-500 font-bold text-xs uppercase tracking-widest mt-1">Zarządzanie uprawnieniami i dostępem do systemu.</p>
+                    </div>
+                    <div class="p-4 bg-red-600/10 rounded-2xl border border-red-600/20 text-red-500 shadow-[0_0_20px_rgba(220,38,38,0.2)]">
+                        <i data-lucide="shield-check" size="32"></i>
+                    </div>
+                </header>
+
+                <!-- Admin Tabs -->
+                <div class="flex gap-4 border-b border-red-500/20 pb-1">
+                    <button onclick="switchAdminTab('users')" id="admin-tab-users" class="px-8 py-4 text-[10px] font-black uppercase tracking-[0.2em] text-red-500 border-b-2 border-red-500 transition-all">Użytkownicy</button>
+                    <button onclick="switchAdminTab('database')" id="admin-tab-database" class="px-8 py-4 text-[10px] font-black uppercase tracking-[0.2em] text-gray-500 hover:text-white transition-all">Baza Danych</button>
+                    <button onclick="switchAdminTab('logs')" id="admin-tab-logs" class="px-8 py-4 text-[10px] font-black uppercase tracking-[0.2em] text-gray-500 hover:text-white transition-all">Logi Systemowe</button>
+                </div>
+
+                <!-- Tab Content: Users -->
+                <div id="admin-content-users" class="space-y-8">
+                    <div class="card border-red-500/10 bg-black/40 p-8">
+                        <h2 class="text-2xl font-black text-white uppercase tracking-tighter flex items-center gap-4 mb-8">
+                            <i data-lucide="users" class="text-red-500"></i>
+                            Zarządzanie Użytkownikami
+                        </h2>
+                        
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left">
+                                <thead class="border-b border-red-500/10">
+                                    <tr>
+                                        <th class="py-4 text-[10px] font-black uppercase tracking-widest text-red-500/60">Użytkownik</th>
+                                        <th class="py-4 text-[10px] font-black uppercase tracking-widest text-red-500/60">Ranga</th>
+                                        <th class="py-4 text-[10px] font-black uppercase tracking-widest text-red-500/60">Status Admina</th>
+                                        <th class="py-4 text-[10px] font-black uppercase tracking-widest text-red-500/60 text-right">Akcje</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="admin-users-list" class="divide-y divide-red-500/5">
+                                    <!-- Populated by JS -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab Content: Database -->
+                <div id="admin-content-database" class="hidden space-y-8">
+                    <div class="card border-red-500/10 bg-black/40 p-8">
+                        <h2 class="text-2xl font-black text-white uppercase tracking-tighter flex items-center gap-4 mb-8">
+                            <i data-lucide="database" class="text-red-500"></i>
+                            Baza Danych Użytkowników
+                        </h2>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left">
+                                <thead class="border-b border-red-500/10">
+                                    <tr>
+                                        <th class="py-4 text-[10px] font-black uppercase tracking-widest text-red-500/60">Osoba</th>
+                                        <th class="py-4 text-[10px] font-black uppercase tracking-widest text-red-500/60">Odznaka</th>
+                                        <th class="py-4 text-[10px] font-black uppercase tracking-widest text-red-500/60">Godziny</th>
+                                        <th class="py-4 text-[10px] font-black uppercase tracking-widest text-red-500/60">Podjednostka</th>
+                                        <th class="py-4 text-[10px] font-black uppercase tracking-widest text-red-500/60 text-right">Discord ID</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="admin-database-list" class="divide-y divide-red-500/5">
+                                    <!-- Populated by JS -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab Content: Logs -->
+                <div id="admin-content-logs" class="hidden space-y-8">
+                    <div class="card border-red-500/10 bg-black/40 p-8">
+                        <div class="flex justify-between items-center mb-8">
+                            <h2 class="text-2xl font-black text-white uppercase tracking-tighter flex items-center gap-4">
+                                <i data-lucide="scroll-text" class="text-red-500"></i>
+                                Logi Systemowe
+                            </h2>
+                            <button onclick="clearLogs()" class="text-[9px] font-black uppercase tracking-widest text-red-500/60 hover:text-red-500 transition-all">Wyczyść Logi</button>
+                        </div>
+                        <div id="admin-logs-container" class="space-y-3 font-mono text-[11px] max-h-[600px] overflow-y-auto pr-4 custom-scrollbar">
+                            <!-- Logs will be inserted here -->
+                            <div class="p-3 bg-red-500/5 border border-red-500/10 rounded-lg text-gray-400">
+                                <span class="text-red-500/60">[2026-03-24 14:45:12]</span> System zainicjalizowany pomyślnie.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- EDIT CHARACTER MODAL -->
+    <div id="edit-modal" class="hidden fixed inset-0 z-[300] flex items-center justify-center p-6">
+        <div class="absolute inset-0 bg-black/90 backdrop-blur-xl" onclick="toggleEditModal()"></div>
+        <div class="card relative w-full max-w-2xl space-y-10 border-green-500/60 bg-black shadow-[0_0_100px_rgba(0,0,0,1)] animate-in zoom-in-95 duration-500 p-12 overflow-y-auto max-h-[90vh]">
+            <div class="flex items-center justify-between border-b border-green-900/40 pb-8">
+                <h2 id="edit-modal-title" class="text-3xl font-black flex items-center gap-4 text-white uppercase tracking-widest">
+                    <i data-lucide="user-cog" class="text-green-500"></i>
+                    Zarządzanie Profilem
+                </h2>
+                <button onclick="toggleEditModal()" class="text-gray-500 hover:text-red-500 transition-all hover:rotate-90">
+                    <i data-lucide="x" size="28"></i>
+                </button>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="space-y-3">
+                    <label class="text-[10px] font-black text-green-500 uppercase tracking-widest">Imię Operacyjne</label>
+                    <input type="text" id="edit-first-name" class="input-dark font-bold text-lg" placeholder="np. Matt">
+                </div>
+                <div class="space-y-3">
+                    <label class="text-[10px] font-black text-green-500 uppercase tracking-widest">Nazwisko</label>
+                    <input type="text" id="edit-last-name" class="input-dark font-bold text-lg" placeholder="np. Stone">
+                </div>
+                <div class="space-y-3">
+                    <label class="text-[10px] font-black text-green-500 uppercase tracking-widest">Kod Odznaki</label>
+                    <input type="text" id="edit-badge" class="input-dark font-bold text-lg" placeholder="np. 4492">
+                </div>
+                <div class="space-y-3">
+                    <label class="text-[10px] font-black text-green-500 uppercase tracking-widest">Data Urodzenia</label>
+                    <input type="date" id="edit-birth-date" class="input-dark font-bold text-lg">
+                </div>
+                <div class="space-y-3">
+                    <label class="text-[10px] font-black text-green-500 uppercase tracking-widest">Godziny Służby</label>
+                    <input type="number" id="edit-hours" class="input-dark font-bold text-lg" placeholder="np. 124">
+                </div>
+                <div class="space-y-3">
+                    <label class="text-[10px] font-black text-green-500 uppercase tracking-widest">Stopień Służbowy</label>
+                    <div class="relative">
+                        <select id="edit-rank" class="input-dark appearance-none cursor-pointer font-bold text-lg">
+                            <option value="Oficer I">Oficer I</option>
+                            <option value="Oficer II">Oficer II</option>
+                            <option value="Oficer III">Oficer III</option>
+                            <option value="Oficer VI">Oficer VI</option>
+                            <option value="Sierżant I">Sierżant I</option>
+                            <option value="Sierżant II">Sierżant II</option>
+                            <option value="Porucznik I">Porucznik I</option>
+                            <option value="Porucznik II">Porucznik II</option>
+                            <option value="Kapitan I">Kapitan I</option>
+                            <option value="Administrator">Administrator</option>
+                        </select>
+                        <div class="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none">
+                            <i data-lucide="chevron-down" class="text-green-500"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="space-y-3">
+                    <label class="text-[10px] font-black text-red-500 uppercase tracking-widest">Podjednostka Operacyjna</label>
+                    <div class="relative">
+                        <select id="edit-subunit" class="input-dark border-red-500/20 appearance-none cursor-pointer font-bold text-lg text-red-500">
+                            <option value="">Brak Podjednostki</option>
+                            <option value="S.T.A.D">S.T.A.D</option>
+                            <option value="G.S.R">G.S.R</option>
+                        </select>
+                        <div class="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none">
+                            <i data-lucide="chevron-down" class="text-red-500"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="space-y-3">
+                    <label class="text-[10px] font-black text-green-500 uppercase tracking-widest">URL Avatara</label>
+                    <input type="text" id="edit-avatar-url" class="input-dark font-bold text-xs" placeholder="https://...">
+                </div>
+
+                <div class="space-y-3 md:col-span-2">
+                    <label class="text-[10px] font-black text-green-500 uppercase tracking-widest">URL Banneru Profilu</label>
+                    <input type="text" id="edit-banner-url" class="input-dark font-bold text-xs" placeholder="https://...">
+                </div>
+
+                <div id="admin-achievements-edit" class="hidden space-y-3 md:col-span-2 border-t border-white/5 pt-6">
+                    <label class="text-[10px] font-black text-yellow-500 uppercase tracking-widest">Zarządzaj Osiągnięciami (Admin)</label>
+                    <div class="flex gap-4">
+                        <input type="text" id="new-achievement-input" class="input-dark flex-1" placeholder="Nazwa osiągnięcia...">
+                        <button onclick="addAchievementToEdit()" class="px-6 py-2 bg-yellow-600 rounded-xl text-black font-black text-[10px] uppercase">Dodaj</button>
+                    </div>
+                    <div id="edit-achievements-list" class="flex flex-wrap gap-2 mt-4"></div>
+                </div>
+            </div>
+
+            <div class="flex gap-4 pt-6">
+                <button onclick="toggleEditModal()" class="flex-1 py-5 bg-white/5 hover:bg-white/10 rounded-2xl font-black text-xs uppercase tracking-[0.2em] border border-white/10 transition-all">Cancel</button>
+                <button id="save-character-btn" onclick="saveCharacter()" class="flex-1 btn-liquid py-5 rounded-2xl font-black text-xs uppercase tracking-[0.2em] transition-all">Zapisz Dane</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- SETTINGS MODAL -->
+    <div id="settings-modal" class="hidden fixed inset-0 z-[300] flex items-center justify-center p-6">
+        <div class="absolute inset-0 bg-black/90 backdrop-blur-xl" onclick="toggleSettingsModal()"></div>
+        <div class="card relative w-full max-w-lg space-y-10 border-green-500/60 bg-black shadow-[0_0_100px_rgba(0,0,0,1)] animate-in zoom-in-95 duration-500 p-12">
+            <div class="flex items-center justify-between border-b border-green-900/40 pb-8">
+                <h2 class="text-3xl font-black flex items-center gap-4 text-white uppercase tracking-widest">
+                    <i data-lucide="settings" class="text-green-500"></i>
+                    Ustawienia Systemu
+                </h2>
+                <button onclick="toggleSettingsModal()" class="text-gray-500 hover:text-red-500 transition-all hover:rotate-90">
+                    <i data-lucide="x" size="28"></i>
+                </button>
+            </div>
+
+            <div class="space-y-8">
+                <!-- Color Customization -->
+                <div class="space-y-4">
+                    <label class="text-[10px] font-black text-green-500 uppercase tracking-widest flex items-center gap-2">
+                        <i data-lucide="palette" size="14"></i> Personalizacja Kolorów
+                    </label>
+                    <div class="grid grid-cols-1 gap-4">
+                        <div class="flex gap-4 items-center bg-white/5 p-4 rounded-2xl border border-white/5">
+                            <input type="color" id="settings-theme-color" class="h-14 w-14 rounded-xl bg-black border border-green-900/40 cursor-pointer p-1 transition-all hover:scale-105" oninput="updateThemeColorPreview(this.value)">
+                            <div class="flex-1 space-y-1">
+                                <div class="text-[10px] text-gray-500 font-black uppercase tracking-widest">Główny Kolor Systemu</div>
+                                <input type="text" id="settings-theme-color-hex" class="bg-transparent border-none text-white font-mono text-lg uppercase focus:ring-0 p-0 w-full" placeholder="#22C55E" oninput="updateThemeColorPreview(this.value)">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Password Change (Only for registered users) -->
+                <div id="settings-password-section" class="space-y-4 pt-8 border-t border-green-900/20">
+                    <label class="text-[10px] font-black text-yellow-500 uppercase tracking-widest flex items-center gap-2">
+                        <i data-lucide="lock" size="14"></i> Zabezpieczenia
+                    </label>
+                    <div class="space-y-4">
+                        <div class="relative">
+                            <input type="password" id="settings-new-password" class="input-dark text-xs tracking-[0.3em]" placeholder="Nowe Hasło">
+                            <button onclick="togglePasswordVisibility('settings-new-password')" class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500">
+                                <i data-lucide="eye" size="14"></i>
+                            </button>
+                        </div>
+                        <input type="password" id="settings-confirm-password" class="input-dark text-xs tracking-[0.3em]" placeholder="Powtórz Hasło">
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex gap-4 pt-6">
+                <button onclick="toggleSettingsModal()" class="flex-1 py-5 bg-white/5 hover:bg-white/10 rounded-2xl font-black text-xs uppercase tracking-[0.2em] border border-white/10 transition-all">Anuluj</button>
+                <button onclick="saveSettings()" class="flex-1 btn-liquid py-5 rounded-2xl font-black text-xs uppercase tracking-[0.2em] transition-all">Zastosuj Zmiany</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- NOTIFICATION CONTAINER -->
+    <div id="notification-container"></div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const code = urlParams.get('code');
+            
+            if (code) {
+                handleDiscordCallback(code);
+            } else {
+                checkLoginStatus();
+            }
+            lucide.createIcons();
+        });
+
+        function handleDiscordCallback(code) {
+            window.history.replaceState({}, document.title, window.location.pathname);
+            showNotification("System", "Weryfikacja kodu Discord...", "info");
+            setTimeout(() => {
+                finalizeDiscordLogin();
+            }, 1500);
+        }
+
+        // --- Auth System UI Toggles ---
+        function showRegisterView() {
+            document.getElementById('login-form-view').classList.add('hidden');
+            document.getElementById('register-form-view').classList.remove('hidden');
+        }
+
+        function showLoginView() {
+            document.getElementById('register-form-view').classList.add('hidden');
+            document.getElementById('login-form-view').classList.remove('hidden');
+        }
+
+        function togglePasswordVisibility(id) {
+            const input = document.getElementById(id);
+            const icon = event.currentTarget.querySelector('i');
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.setAttribute('data-lucide', 'eye-off');
+            } else {
+                input.type = 'password';
+                icon.setAttribute('data-lucide', 'eye');
+            }
+            lucide.createIcons();
+        }
+
+        // --- Registration & Login Logic ---
+        function processRegistration() {
+            const nick = document.getElementById('reg-nick').value.trim().toUpperCase();
+            const discordId = document.getElementById('reg-discord-id').value.trim();
+            const fullName = document.getElementById('reg-full-name').value.trim();
+            const password = document.getElementById('reg-password').value;
+
+            if (!nick || !discordId || !fullName || !password) {
+                showNotification("Błąd", "Wypełnij wszystkie pola rejestracji!", "error");
+                return;
+            }
+
+            const users = JSON.parse(localStorage.getItem('g6_registered_users') || '[]');
+            
+            if (users.find(u => u.nick === nick)) {
+                showNotification("Błąd", "Użytkownik o takim nicku już istnieje!", "error");
+                return;
+            }
+
+            const nameParts = fullName.split(' ');
+            const firstName = nameParts[0] || "Nieznany";
+            const lastName = nameParts.slice(1).join(' ') || "Obywatel";
+
+            const newUser = {
+                id: discordId,
+                nick: nick,
+                password: password,
+                firstName: firstName,
+                lastName: lastName,
+                badge: "0000",
+                rank: "Kadet I",
+                hours: 0,
+                discordId: discordId,
+                isAdmin: false,
+                achievements: [],
+                subunit: "",
+                birthDate: "",
+                avatarUrl: "",
+                bannerUrl: ""
+            };
+
+            users.push(newUser);
+            localStorage.setItem('g6_registered_users', JSON.stringify(users));
+
+            addLog(`NOWA REJESTRACJA: Nick: ${nick} | Osoba: ${fullName} | Discord ID: ${discordId}`);
+            showNotification("Sukces", "Konto zostało utworzone! Możesz się zalogować.", "success");
+            
+            // Clear inputs
+            document.getElementById('reg-nick').value = '';
+            document.getElementById('reg-discord-id').value = '';
+            document.getElementById('reg-full-name').value = '';
+            document.getElementById('reg-password').value = '';
+            
+            showLoginView();
+        }
+
+        function loginWithCredentials() {
+            const nick = document.getElementById('login-nick').value.trim().toUpperCase();
+            const password = document.getElementById('login-password').value;
+
+            if (!nick || !password) {
+                showNotification("Błąd", "Wprowadź dane logowania!", "error");
+                return;
+            }
+
+            const users = JSON.parse(localStorage.getItem('g6_registered_users') || '[]');
+            const user = users.find(u => u.nick === nick && u.password === password);
+
+            if (user) {
+                character = { ...character, ...user };
+                localStorage.setItem('g6_is_logged_in', 'true');
+                saveCharacterToLocalStorage();
+                
+                // Upewnij się, że kolor motywu jest załadowany
+                if (character.themeColor) {
+                    applyThemeColor(character.themeColor);
+                }
+                
+                checkLoginStatus();
+                showNotification("Witaj", `Zalogowano jako ${user.firstName} ${user.lastName}`, "success");
+                addLog(`Użytkownik ${user.nick} zalogował się do systemu.`);
+                showView('dashboard');
+            } else {
+                showNotification("Błąd", "Nieprawidłowy nick lub hasło!", "error");
+            }
+        }
+
+        function finalizeDiscordLogin() {
+            character.discordNick = "MattStone#0001";
+            character.discordId = "1485827941660360724";
+            character.discordAvatar = "https://ui-avatars.com/api/?name=Matt+Stone&background=000&color=22c55e";
+            character.isActive = true;
+            character.isAdmin = true;
+            character.isAdminPanelAuthenticated = true; 
+            
+            if (!localStorage.getItem('g6_character_data')) {
+                character.firstName = "Matt";
+                character.lastName = "Stone";
+                character.rank = "Administrator";
+            } else {
+                loadCharacterFromLocalStorage();
+                character.isAdmin = true;
+                character.isAdminPanelAuthenticated = true;
+            }
+
+            localStorage.setItem('g6_is_logged_in', 'true');
+            saveCharacterToLocalStorage();
+            checkLoginStatus();
+            showNotification("Logowanie Discord", "Zalogowano pomyślnie przez Discord Gateway.", "success");
+            addLog(`Użytkownik ${character.firstName} ${character.lastName} zalogował się przez Discord (ADMIN).`);
+        }
+
+        let character = {
+            id: "self",
+            firstName: "Matt",
+            lastName: "Stone",
+            badge: "4492",
+            rank: "Administrator",
+            subunit: "S.T.A.D",
+            birthDate: "1995-05-15",
+            avatarUrl: "",
+            bannerUrl: "",
+            themeColor: "#22C55E",
+            achievements: ["Pracownik Tygodnia", "Weteran <span class=\"text-blue-500\">OsloRP</span> G6"],
+            hours: 124,
+            isAdmin: false,
+            discordNick: null,
+            discordId: null,
+            discordAvatar: null,
+            isActive: false,
+            isAdminPanelAuthenticated: false
+        };
+
+        let adminUsers = [
+            { id: "292703114674012161", firstName: "John", lastName: "Doe", rank: "Kapitan I", badge: "1001", hours: 248, reports: 124, subunit: "G.S.R", birthDate: "1990-01-01", avatarUrl: "", bannerUrl: "", achievements: ["Pracownik Miesiąca"], isAdmin: false },
+            { id: "159283746501928374", firstName: "Sarah", lastName: "Conor", rank: "Sierżant II", badge: "2002", hours: 98, reports: 45, subunit: "", birthDate: "1992-05-20", avatarUrl: "", bannerUrl: "", achievements: [], isAdmin: false },
+            { id: "987654321098765432", firstName: "Mike", lastName: "Ross", rank: "Oficer III", badge: "3003", hours: 72, reports: 30, subunit: "S.T.A.D", birthDate: "1998-11-12", avatarUrl: "", bannerUrl: "", achievements: ["Wzorowy Kadet"], isAdmin: false }
+        ];
+
+        function showView(viewName) {
+            const views = ['dashboard', 'reports', 'profile', 'ranking', 'players', 'events', 'vacations', 'admin-login', 'admin-panel'];
+            views.forEach(v => {
+                const el = document.getElementById(`${v}-view`);
+                const nav = document.getElementById(`nav-${v}`);
+                if (el) el.classList.add('hidden');
+                if (nav) {
+                    nav.classList.remove('nav-active');
+                    nav.classList.add('text-gray-400');
+                }
+            });
+
+            // Security check for admin panel
+            if (viewName === 'admin-panel' && !character.isAdminPanelAuthenticated) {
+                showView('admin-login');
+                return;
+            }
+
+            document.getElementById(`${viewName}-view`).classList.remove('hidden');
+            if (document.getElementById(`nav-${viewName}`)) {
+                document.getElementById(`nav-${viewName}`).classList.add('nav-active');
+                document.getElementById(`nav-${viewName}`).classList.remove('text-gray-400');
+            }
+
+            // Special cases for view reset
+            if (viewName === 'reports') {
+                renderReportsView();
+            }
+            if (viewName === 'events') {
+                document.getElementById('new-event-btn').classList.toggle('hidden', !character.isAdmin);
+            }
+            if (viewName === 'vacations') {
+                renderVacations();
+            }
+            if (viewName === 'admin-panel') {
+                switchAdminTab('users'); // Reset to first tab
+                renderAdminUsers();
+            }
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            lucide.createIcons();
+        }
+
+        // --- Admin Panel Logic ---
+        function loginToAdminPanel() {
+            const pass = document.getElementById('admin-password').value;
+            // Simulated hardcoded password for demo
+            if (pass === '1234') {
+                character.isAdminPanelAuthenticated = true;
+                document.getElementById('sidebar-admin-section').classList.remove('hidden');
+                showNotification("Autoryzacja Admina", "Pomyślnie zalogowano do Panelu Zarządzania.", "success");
+                addLog(`Użytkownik ${character.firstName} ${character.lastName} autoryzował dostęp do Panelu Admina.`);
+                showView('admin-panel');
+                document.getElementById('admin-password').value = '';
+            } else {
+                showNotification("Błąd Autoryzacji", "Nieprawidłowy kod dostępu <span class=\"text-blue-500\">OsloRP</span> G6.", "error");
+                addLog(`NIEUDANA próba logowania do Panelu Admina przez ${character.firstName} ${character.lastName}.`);
+                document.getElementById('admin-password').classList.add('border-red-500');
+                setTimeout(() => document.getElementById('admin-password').classList.remove('border-red-500'), 2000);
+            }
+        }
+
+        function switchAdminTab(tabName) {
+            const tabs = ['users', 'database', 'logs'];
+            tabs.forEach(t => {
+                document.getElementById(`admin-content-${t}`).classList.add('hidden');
+                const btn = document.getElementById(`admin-tab-${t}`);
+                btn.classList.remove('text-red-500', 'border-b-2', 'border-red-500');
+                btn.classList.add('text-gray-500');
+            });
+
+            document.getElementById(`admin-content-${tabName}`).classList.remove('hidden');
+            const activeBtn = document.getElementById(`admin-tab-${tabName}`);
+            activeBtn.classList.add('text-red-500', 'border-b-2', 'border-red-500');
+            activeBtn.classList.remove('text-gray-500');
+
+            if (tabName === 'database') renderAdminDatabase();
+            if (tabName === 'logs') renderAdminLogs();
+            lucide.createIcons();
+        }
+
+        function addLog(message) {
+            const logs = JSON.parse(localStorage.getItem('g6_system_logs') || '[]');
+            const timestamp = new Date().toLocaleString();
+            logs.unshift({ timestamp, message });
+            // Keep only last 100 logs
+            if (logs.length > 100) logs.pop();
+            localStorage.setItem('g6_system_logs', JSON.stringify(logs));
+            
+            // If logs view is active, re-render
+            const logsContainer = document.getElementById('admin-logs-container');
+            if (logsContainer && !document.getElementById('admin-content-logs').classList.contains('hidden')) {
+                renderAdminLogs();
+            }
+        }
+
+        function renderAdminLogs() {
+            const container = document.getElementById('admin-logs-container');
+            const logs = JSON.parse(localStorage.getItem('g6_system_logs') || '[]');
+            
+            if (logs.length === 0) {
+                container.innerHTML = '<div class="text-gray-600 italic">Brak zarejestrowanych logów.</div>';
+                return;
+            }
+
+            container.innerHTML = logs.map(log => `
+                <div class="p-3 bg-red-500/5 border border-red-500/10 rounded-lg text-gray-400">
+                    <span class="text-red-500/60">[${log.timestamp}]</span> ${log.message}
+                </div>
+            `).join('');
+        }
+
+        function clearLogs() {
+            if (confirm("Czy na pewno chcesz wyczyścić wszystkie logi?")) {
+                localStorage.removeItem('g6_system_logs');
+                renderAdminLogs();
+                showNotification("System", "Logi zostały wyczyszczone.", "info");
+            }
+        }
+
+        function renderAdminDatabase() {
+            const list = document.getElementById('admin-database-list');
+            if (!list) return; 
+            
+            const registeredUsers = JSON.parse(localStorage.getItem('g6_registered_users') || '[]');
+            const players = [
+                { ...character, id: "self" },
+                ...adminUsers,
+                ...registeredUsers.filter(u => u.nick !== character.nick) // Add registered users except current
+            ];
+
+            list.innerHTML = players.map(user => `
+                <tr class="hover:bg-red-500/5 transition-colors">
+                    <td class="py-4">
+                        <div class="flex items-center gap-3">
+                            <img src="${user.avatarUrl || user.discordAvatar || `https://ui-avatars.com/api/?name=${user.firstName}+${user.lastName}&background=000&color=22c55e`}" class="w-8 h-8 rounded-lg object-cover">
+                            <div class="flex flex-col">
+                                <span class="text-white font-bold">${user.firstName} ${user.lastName}</span>
+                                ${user.nick ? `<span class="text-[8px] text-gray-500 font-mono">NICK: ${user.nick}</span>` : ''}
+                            </div>
+                        </div>
+                    </td>
+                    <td class="py-4 text-gray-400 text-xs font-mono">#${user.badge}</td>
+                    <td class="py-4 text-green-500 font-black">${user.hours}H</td>
+                    <td class="py-4">
+                        ${user.subunit ? `<span class="subunit-badge text-[7px] py-0">${user.subunit}</span>` : '<span class="text-gray-700 text-[10px]">—</span>'}
+                    </td>
+                    <td class="py-4 text-right text-[10px] text-gray-600 font-mono">${user.discordId || 'Brak'}</td>
+                </tr>
+            `).join('');
+        }
+
+        function renderAdminDatabase() {
+            const list = document.getElementById('admin-database-list');
+            const players = [
+                { ...character, id: "self" },
+                ...adminUsers
+            ];
+
+            list.innerHTML = players.map(user => `
+                <tr class="hover:bg-red-500/5 transition-colors">
+                    <td class="py-4">
+                        <div class="flex items-center gap-3">
+                            <img src="${user.avatarUrl || user.discordAvatar || `https://ui-avatars.com/api/?name=${user.firstName}+${user.lastName}&background=000&color=22c55e`}" class="w-8 h-8 rounded-lg object-cover">
+                            <span class="text-white font-bold">${user.firstName} ${user.lastName}</span>
+                        </div>
+                    </td>
+                    <td class="py-4 text-gray-400 text-xs font-mono">#${user.badge}</td>
+                    <td class="py-4 text-green-500 font-black">${user.hours}H</td>
+                    <td class="py-4">
+                        ${user.subunit ? `<span class="subunit-badge text-[7px] py-0">${user.subunit}</span>` : '<span class="text-gray-700 text-[10px]">—</span>'}
+                    </td>
+                    <td class="py-4 text-right text-[10px] text-gray-600 font-mono">${user.discordId || 'Brak'}</td>
+                </tr>
+            `).join('');
+        }
+
+        function renderAdminUsers() {
+            const list = document.getElementById('admin-users-list');
+            if (!list) return; 
+            
+            const registeredUsers = JSON.parse(localStorage.getItem('g6_registered_users') || '[]');
+            const allUsersForAdmin = [
+                ...adminUsers,
+                ...registeredUsers
+            ];
+
+            list.innerHTML = allUsersForAdmin.map(user => {
+                const isRegistered = !!user.nick;
+                const userId = isRegistered ? user.nick : user.id;
+                return `
+                <tr class="group hover:bg-red-500/5 transition-colors">
+                    <td class="py-6">
+                        <div class="flex items-center gap-4">
+                            <img src="${user.avatarUrl || user.discordAvatar || `https://ui-avatars.com/api/?name=${user.firstName}+${user.lastName}&background=000&color=22c55e`}" class="w-10 h-10 rounded-xl border border-green-900/30 object-cover">
+                            <div>
+                                <div class="text-white font-black uppercase text-sm">${user.firstName} ${user.lastName}</div>
+                                <div class="text-[9px] text-gray-500 font-bold">${isRegistered ? `NICK: ${user.nick}` : `ID: ${user.id}`}</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="py-6">
+                        <div class="flex flex-col gap-1">
+                            <span class="text-xs font-bold text-gray-400 uppercase tracking-widest">${user.rank}</span>
+                            ${user.subunit ? `<span class="subunit-badge w-fit text-[8px] py-0.5">${user.subunit}</span>` : ''}
+                        </div>
+                    </td>
+                    <td class="py-6">
+                        <span id="admin-status-${userId}" class="px-3 py-1 ${user.isAdmin ? 'bg-red-500/20 text-red-500 border-red-500/30' : 'bg-gray-500/10 text-gray-500 border-gray-500/20'} text-[9px] font-black rounded-lg border uppercase tracking-widest">
+                            ${user.isAdmin ? 'ADMINISTRATOR' : 'Brak Dostępu'}
+                        </span>
+                    </td>
+                    <td class="py-6 text-right">
+                        <div class="flex justify-end gap-2">
+                            ${isRegistered ? `
+                                <button onclick="viewUserPassword('${user.nick}')" class="p-2 bg-yellow-500/10 hover:bg-yellow-500/20 text-yellow-500 rounded-lg transition-all border border-yellow-500/10" title="Pokaż Hasło">
+                                    <i data-lucide="key" size="14"></i>
+                                </button>
+                                <button onclick="resetUserPassword('${user.nick}')" class="p-2 bg-blue-500/10 hover:bg-blue-500/20 text-blue-500 rounded-lg transition-all border border-blue-500/10" title="Resetuj Hasło">
+                                    <i data-lucide="refresh-cw" size="14"></i>
+                                </button>
+                            ` : ''}
+                            <button onclick="openAdminEditUser('${userId}', ${isRegistered})" class="p-2 bg-white/5 hover:bg-white/10 text-gray-400 hover:text-white rounded-lg transition-all border border-white/5">
+                                <i data-lucide="edit-3" size="14"></i>
+                            </button>
+                            <button onclick="toggleUserAdminSim('${user.firstName} ${user.lastName}', '${userId}', ${isRegistered})" id="admin-btn-${userId}" class="px-6 py-2 ${user.isAdmin ? 'bg-gray-600' : 'bg-red-600 hover:bg-red-700'} text-white text-[9px] font-black rounded-lg uppercase tracking-widest transition-all shadow-lg">
+                                ${user.isAdmin ? 'Odbierz' : 'Nadaj Admina'}
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            `}).join('');
+            lucide.createIcons();
+        }
+
+        function viewUserPassword(nick) {
+            const users = JSON.parse(localStorage.getItem('g6_registered_users') || '[]');
+            const user = users.find(u => u.nick === nick);
+            if (user) {
+                alert(`Hasło użytkownika ${user.firstName} ${user.lastName} (${user.nick}): ${user.password}`);
+                addLog(`ADMIN ${character.firstName} ${character.lastName} podejrzał hasło użytkownika ${user.nick}.`);
+            }
+        }
+
+        function resetUserPassword(nick) {
+            const newPassword = prompt(`Wprowadź nowe hasło dla użytkownika ${nick}:`);
+            if (newPassword) {
+                const users = JSON.parse(localStorage.getItem('g6_registered_users') || '[]');
+                const index = users.findIndex(u => u.nick === nick);
+                if (index !== -1) {
+                    users[index].password = newPassword;
+                    localStorage.setItem('g6_registered_users', JSON.stringify(users));
+                    showNotification("Sukces", `Hasło dla ${nick} zostało zmienione.`, "success");
+                    addLog(`ADMIN ${character.firstName} ${character.lastName} zresetował hasło użytkownika ${nick}.`);
+                }
+            }
+        }
+
+        let currentlyEditingUserId = null;
+        let isEditingRegisteredUser = false;
+        let tempAchievements = [];
+
+        function openAdminEditUser(userId, isRegistered = false) {
+            const registeredUsers = JSON.parse(localStorage.getItem('g6_registered_users') || '[]');
+            const user = isRegistered ? registeredUsers.find(u => u.nick === userId) : adminUsers.find(u => u.id === userId);
+            
+            if (!user) return;
+
+            currentlyEditingUserId = userId;
+            isEditingRegisteredUser = isRegistered;
+            tempAchievements = [...(user.achievements || [])];
+            
+            const modal = document.getElementById('edit-modal');
+            modal.classList.remove('hidden');
+            document.getElementById('edit-modal-title').innerText = "Zarządzaj Pracownikiem";
+            
+            document.getElementById('edit-first-name').value = user.firstName;
+            document.getElementById('edit-last-name').value = user.lastName;
+            document.getElementById('edit-badge').value = user.badge;
+            document.getElementById('edit-rank').value = user.rank;
+            document.getElementById('edit-hours').value = user.hours;
+            document.getElementById('edit-subunit').value = user.subunit || "";
+            document.getElementById('edit-birth-date').value = user.birthDate || "";
+            document.getElementById('edit-avatar-url').value = user.avatarUrl || "";
+            document.getElementById('edit-banner-url').value = user.bannerUrl || "";
+
+            // Show achievements section
+            document.getElementById('admin-achievements-edit').classList.remove('hidden');
+            renderEditAchievementsList();
+
+            const saveBtn = document.getElementById('save-character-btn');
+            saveBtn.onclick = saveAdminUserEdit;
+            
+            lucide.createIcons();
+        }
+
+        function renderEditAchievementsList() {
+            const list = document.getElementById('edit-achievements-list');
+            list.innerHTML = tempAchievements.map((a, index) => `
+                <div class="flex items-center gap-2 bg-yellow-500/10 border border-yellow-500/20 px-3 py-1 rounded-lg">
+                    <span class="text-[10px] font-black text-yellow-500 uppercase tracking-widest">${a}</span>
+                    <button onclick="removeAchievementFromEdit(${index})" class="text-red-500 hover:text-red-400">
+                        <i data-lucide="x" size="12"></i>
+                    </button>
+                </div>
+            `).join('');
+            lucide.createIcons();
+        }
+
+        function addAchievementToEdit() {
+            const input = document.getElementById('new-achievement-input');
+            const val = input.value.trim();
+            if (val && !tempAchievements.includes(val)) {
+                tempAchievements.push(val);
+                input.value = '';
+                renderEditAchievementsList();
+            }
+        }
+
+        function removeAchievementFromEdit(index) {
+            tempAchievements.splice(index, 1);
+            renderEditAchievementsList();
+        }
+
+        function saveAdminUserEdit() {
+            if (!currentlyEditingUserId) return;
+
+            let targetUser;
+            let targetName;
+
+            if (isEditingRegisteredUser) {
+                const users = JSON.parse(localStorage.getItem('g6_registered_users') || '[]');
+                const index = users.findIndex(u => u.nick === currentlyEditingUserId);
+                if (index !== -1) {
+                    targetUser = users[index];
+                    targetName = `${targetUser.firstName} ${targetUser.lastName}`;
+                    
+                    users[index] = {
+                        ...users[index],
+                        firstName: document.getElementById('edit-first-name').value,
+                        lastName: document.getElementById('edit-last-name').value,
+                        badge: document.getElementById('edit-badge').value,
+                        rank: document.getElementById('edit-rank').value,
+                        hours: parseInt(document.getElementById('edit-hours').value),
+                        subunit: document.getElementById('edit-subunit').value,
+                        birthDate: document.getElementById('edit-birth-date').value,
+                        avatarUrl: document.getElementById('edit-avatar-url').value,
+                        bannerUrl: document.getElementById('edit-banner-url').value,
+                        achievements: [...tempAchievements]
+                    };
+                    localStorage.setItem('g6_registered_users', JSON.stringify(users));
+                    
+                    // Jeśli edytujemy samego siebie będąc zalogowanym na to konto
+                    if (character.nick === currentlyEditingUserId) {
+                        character = { ...character, ...users[index] };
+                        saveCharacterToLocalStorage();
+                        renderAllCharacterData();
+                    }
+                }
+            } else {
+                const userIndex = adminUsers.findIndex(u => u.id === currentlyEditingUserId);
+                if (userIndex !== -1) {
+                    targetUser = adminUsers[userIndex];
+                    targetName = `${targetUser.firstName} ${targetUser.lastName}`;
+
+                    adminUsers[userIndex] = {
+                        ...adminUsers[userIndex],
+                        firstName: document.getElementById('edit-first-name').value,
+                        lastName: document.getElementById('edit-last-name').value,
+                        badge: document.getElementById('edit-badge').value,
+                        rank: document.getElementById('edit-rank').value,
+                        hours: parseInt(document.getElementById('edit-hours').value),
+                        subunit: document.getElementById('edit-subunit').value,
+                        birthDate: document.getElementById('edit-birth-date').value,
+                        avatarUrl: document.getElementById('edit-avatar-url').value,
+                        bannerUrl: document.getElementById('edit-banner-url').value,
+                        achievements: [...tempAchievements]
+                    };
+                }
+            }
+
+            showNotification("Admin", "Profil użytkownika został zaktualizowany.", "success");
+            addLog(`ADMIN ${character.firstName} ${character.lastName} edytował profil użytkownika ${targetName}.`);
+            toggleEditModal();
+            renderAdminUsers();
+            
+            document.getElementById('save-character-btn').onclick = saveCharacter;
+            document.getElementById('admin-achievements-edit').classList.add('hidden');
+            currentlyEditingUserId = null;
+            isEditingRegisteredUser = false;
+        }
+
+        function toggleUserAdminSim(name, id, isRegistered = false) {
+            const btn = document.getElementById(`admin-btn-${id}`);
+            const status = document.getElementById(`admin-status-${id}`);
+            let user;
+
+            if (isRegistered) {
+                const users = JSON.parse(localStorage.getItem('g6_registered_users') || '[]');
+                const index = users.findIndex(u => u.nick === id);
+                if (index !== -1) {
+                    users[index].isAdmin = !users[index].isAdmin;
+                    user = users[index];
+                    localStorage.setItem('g6_registered_users', JSON.stringify(users));
+                    
+                    // Jeśli nadajemy/odbieramy sobie
+                    if (character.nick === id) {
+                        character.isAdmin = user.isAdmin;
+                        saveCharacterToLocalStorage();
+                    }
+                }
+            } else {
+                user = adminUsers.find(u => u.id === id);
+                if (user) user.isAdmin = !user.isAdmin;
+            }
+
+            if (!user) return;
+
+            if (user.isAdmin) {
+                btn.innerText = 'Odbierz';
+                btn.className = 'px-6 py-2 bg-gray-600 text-white text-[9px] font-black rounded-lg uppercase tracking-widest transition-all shadow-lg';
+                status.innerText = 'ADMINISTRATOR';
+                status.className = 'px-3 py-1 bg-red-500/20 text-red-500 border-red-500/30 text-[9px] font-black rounded-lg border uppercase tracking-widest';
+                showNotification("Uprawnienia", `Nadano status Administratora dla ${name}.`, "success");
+                addLog(`ADMIN ${character.firstName} ${character.lastName} NADAŁ uprawnienia administratora dla ${name}.`);
+            } else {
+                btn.innerText = 'Nadaj Admina';
+                btn.className = 'px-6 py-2 bg-red-600 hover:bg-red-700 text-white text-[9px] font-black rounded-lg uppercase tracking-widest transition-all shadow-lg';
+                status.innerText = 'Brak Dostępu';
+                status.className = 'px-3 py-1 bg-gray-500/10 text-gray-500 border-gray-500/20 text-[9px] font-black rounded-lg border uppercase tracking-widest';
+                showNotification("Uprawnienia", `Odebrano status Administratora dla ${name}.`, "info");
+                addLog(`ADMIN ${character.firstName} ${character.lastName} ODEBRAŁ uprawnienia administratora dla ${name}.`);
+            }
+        }
+
+        // --- Auth & Data Persistence ---
+        function checkLoginStatus() {
+            const isLoggedIn = localStorage.getItem('g6_is_logged_in');
+            if (isLoggedIn) {
+                loadCharacterFromLocalStorage();
+                applyThemeColor(character.themeColor || "#22C55E");
+                renderAllCharacterData();
+                document.getElementById('login-screen').classList.add('hidden');
+                document.getElementById('app-container').classList.remove('hidden');
+                showView('dashboard');
+            } else {
+                document.getElementById('login-screen').classList.remove('hidden');
+                document.getElementById('app-container').classList.add('hidden');
+            }
+        }
+
+        function applyThemeColor(hex) {
+            if (!hex) return;
+            const r = parseInt(hex.slice(1, 3), 16);
+            const g = parseInt(hex.slice(3, 5), 16);
+            const b = parseInt(hex.slice(5, 7), 16);
+            document.documentElement.style.setProperty('--primary-color', `${r}, ${g}, ${b}`);
+            
+            // Sync color inputs
+            const colorInput = document.getElementById('settings-theme-color');
+            const hexInput = document.getElementById('settings-theme-color-hex');
+            if (colorInput) colorInput.value = hex;
+            if (hexInput) hexInput.value = hex.toUpperCase();
+        }
+
+        function updateThemeColorPreview(color) {
+            if (color.startsWith('#')) {
+                applyThemeColor(color);
+            }
+        }
+
+        function loginWithDiscord() {
+            const discordUrl = "https://discord.com/oauth2/authorize?client_id=1485827941660360724&response_type=code&redirect_uri=file%3A%2F%2F%2FC%3A%2FUsers%2Fmatts%2FDocuments%2Ftrae_projects%2FG6%2Fdemo_podgl%25C4%2585d.html&scope=identify";
+            
+            const btn = event.target.closest('button');
+            btn.innerHTML = '<i data-lucide="loader" class="animate-spin" size="20"></i> Przekierowanie...';
+            lucide.createIcons();
+
+            window.location.href = discordUrl;
+        }
+
+        function loginAsGuest() {
+            // Reset character defaults
+            character.firstName = "Gość";
+            character.lastName = "Systemowy";
+            character.badge = "0000";
+            character.rank = "Kadet I";
+            character.isAdmin = false;
+            character.isAdminPanelAuthenticated = false;
+            character.hours = 0;
+            character.discordNick = "Gość#0000";
+            character.discordId = "0";
+            character.discordAvatar = "https://ui-avatars.com/api/?name=Gosc&background=22c55e&color=000";
+            character.isActive = true;
+
+            // Zapisz i zaloguj
+            localStorage.setItem('g6_is_logged_in', 'true');
+            saveCharacterToLocalStorage();
+            
+            // Ukryj ekran logowania i pokaż aplikację
+            document.getElementById('login-screen').classList.add('hidden');
+            document.getElementById('app-container').classList.remove('hidden');
+            
+            // Zainicjalizuj widok
+            renderAllCharacterData();
+            showView('dashboard');
+            
+            showNotification("Dostęp Gościa", "Zalogowano pomyślnie jako Gość.", "info");
+            addLog(`Użytkownik Gość zalogował się do systemu.`);
+            lucide.createIcons();
+        }
+
+        function logout() {
+            addLog(`Użytkownik ${character.firstName} ${character.lastName} wylogował się.`);
+            localStorage.removeItem('g6_is_logged_in');
+            localStorage.removeItem('g6_character_data');
+            checkLoginStatus();
+        }
+
+        function saveCharacterToLocalStorage() {
+            localStorage.setItem('g6_character_data', JSON.stringify(character));
+            
+            // Trwały zapis w bazie zarejestrowanych użytkowników
+            if (character.nick) {
+                const users = JSON.parse(localStorage.getItem('g6_registered_users') || '[]');
+                const index = users.findIndex(u => u.nick === character.nick);
+                if (index !== -1) {
+                    // Aktualizuj dane w bazie (zachowując hasło)
+                    const password = users[index].password;
+                    users[index] = { ...character, password: password };
+                    localStorage.setItem('g6_registered_users', JSON.stringify(users));
+                }
+            }
+
+            // Ensure data sync in admin database view if active
+            if (!document.getElementById('admin-content-database').classList.contains('hidden')) {
+                renderAdminDatabase();
+            }
+        }
+
+        function loadCharacterFromLocalStorage() {
+            const savedData = localStorage.getItem('g6_character_data');
+            if (savedData) {
+                const loadedCharacter = JSON.parse(savedData);
+                character = { ...character, ...loadedCharacter };
+            }
+        }
+
+        function renderAllCharacterData(userData = character) {
+            const isSelf = userData.id === character.id || !userData.id;
+            const fullName = `${userData.firstName} ${userData.lastName}`;
+
+            if (isSelf) {
+                document.getElementById('nav-user-name').innerText = fullName;
+                document.getElementById('nav-user-rank').innerText = userData.rank;
+                document.getElementById('welcome-name').innerText = fullName;
+                document.getElementById('dashboard-badge-display').innerText = userData.badge;
+                document.getElementById('dashboard-hours-display').innerText = `${userData.hours}H`;
+                document.getElementById('active-duty-self-name').innerText = fullName;
+            }
+
+            document.getElementById('profile-full-name').innerText = fullName;
+            document.getElementById('profile-rank').innerText = userData.rank;
+            document.getElementById('profile-badge').innerText = userData.badge;
+            document.getElementById('info-full-name').innerText = fullName;
+            document.getElementById('info-badge').innerText = `#${userData.badge}`;
+            document.getElementById('ranking-self-rank').innerText = userData.rank;
+
+            // Render subunit
+            const profileSubunitContainer = document.getElementById('profile-subunit-display');
+            if (userData.subunit) {
+                profileSubunitContainer.innerHTML = `<span class="subunit-badge">${userData.subunit}</span>`;
+                profileSubunitContainer.classList.remove('hidden');
+            } else {
+                profileSubunitContainer.classList.add('hidden');
+            }
+
+            // Render Birth Date
+            const birthDateStr = userData.birthDate ? userData.birthDate.split('-').reverse().join('.') : "Nie podano";
+            const profileBirthDateDisplay = document.getElementById('profile-birth-date-display');
+            if (profileBirthDateDisplay) profileBirthDateDisplay.innerText = birthDateStr;
+            document.getElementById('profile-birth-date').innerText = birthDateStr;
+
+            // Render Avatar and Banner
+            const avatar = userData.avatarUrl || userData.discordAvatar || `https://ui-avatars.com/api/?name=${userData.firstName}+${userData.lastName}&background=000&color=22c55e`;
+            
+            if (isSelf) {
+                document.getElementById('nav-avatar').src = avatar;
+                document.getElementById('ranking-self-avatar').src = avatar;
+                document.getElementById('active-duty-self-avatar').src = avatar;
+                document.querySelectorAll('.user-avatar-sync').forEach(img => img.src = avatar);
+            }
+            document.getElementById('profile-main-avatar').src = avatar;
+
+            const bannerEl = document.getElementById('profile-banner');
+            if (userData.bannerUrl) {
+                bannerEl.style.backgroundImage = `url(${userData.bannerUrl})`;
+            } else {
+                bannerEl.style.backgroundImage = 'linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url("https://images.unsplash.com/photo-1544006659-f0b21f04cb1d?q=80&w=2070&auto=format&fit=crop")';
+            }
+
+            // Render Achievements
+            const achievementsContainer = document.getElementById('profile-achievements');
+            if (achievementsContainer) {
+                if (userData.achievements && userData.achievements.length > 0) {
+                    achievementsContainer.innerHTML = userData.achievements.map(a => `
+                        <div class="card border-yellow-500/30 bg-black/60 flex gap-6 items-center p-8">
+                            <div class="w-16 h-16 bg-yellow-500/10 rounded-2xl flex items-center justify-center border border-yellow-500/20">
+                                <i data-lucide="award" class="text-yellow-500 w-8 h-8"></i>
+                            </div>
+                            <div>
+                                <div class="font-black text-white uppercase text-base tracking-tight">${a}</div>
+                                <div class="text-[9px] text-gray-500 font-black uppercase tracking-widest mt-1">Status: Aktywne</div>
+                            </div>
+                        </div>
+                    `).join('');
+                } else {
+                    achievementsContainer.innerHTML = '<p class="text-gray-600 text-[10px] font-black uppercase tracking-widest italic p-8 card border-dashed w-full text-center">Brak nadanych osiągnięć</p>';
+                }
+            }
+
+            // Hide/Show edit button
+            const canEdit = isSelf || character.isAdmin;
+            document.getElementById('profile-actions').classList.toggle('hidden', !canEdit);
+
+            if (isSelf && userData.discordNick) {
+                const profileDiscordInfo = document.getElementById('profile-discord-info');
+                if (profileDiscordInfo) profileDiscordInfo.classList.remove('hidden');
+                
+                const displayDiscordNick = document.getElementById('display-discord-nick');
+                if (displayDiscordNick) displayDiscordNick.innerText = userData.discordNick;
+                
+                const displayDiscordId = document.getElementById('display-discord-id');
+                if (displayDiscordId) displayDiscordId.innerText = userData.discordId;
+                
+                document.getElementById('dashboard-display-discord-id').innerText = userData.discordId;
+                document.getElementById('info-discord-nick').innerText = userData.discordNick;
+
+                document.getElementById('discord-sync-status').innerHTML = `
+                    <div class="w-2 h-2 bg-green-500 rounded-full animate-pulse shadow-[0_0_10px_#22c55e]"></div>
+                    <p class="text-gray-400 font-bold text-xs uppercase tracking-[0.2em]">Discord: <span class="text-green-500">Zsynchronizowano</span></p>
+                `;
+            } else if (isSelf) {
+                const profileDiscordInfo = document.getElementById('profile-discord-info');
+                if (profileDiscordInfo) profileDiscordInfo.classList.add('hidden');
+                document.getElementById('info-discord-nick').innerText = "Niepołączony";
+            }
+
+            if (character.isAdminPanelAuthenticated) {
+                document.getElementById('sidebar-admin-section').classList.remove('hidden');
+            } else {
+                document.getElementById('sidebar-admin-section').classList.add('hidden');
+            }
+
+            updateActivityUI();
+            lucide.createIcons();
+        }
+
+        function viewUserProfile(userId) {
+            const registeredUsers = JSON.parse(localStorage.getItem('g6_registered_users') || '[]');
+            const user = registeredUsers.find(u => u.id === userId) || adminUsers.find(u => u.id === userId);
+            
+            if (user) {
+                renderAllCharacterData(user);
+                showView('profile');
+            } else if (userId === character.discordId || userId === "0" || userId === "self") {
+                renderAllCharacterData(character);
+                showView('profile');
+            }
+        }
+
+        function renderReportsView() {
+            const adminView = document.getElementById('admin-reports-view');
+            const userView = document.getElementById('user-reports-view');
+            const allReportsList = document.getElementById('all-reports-list');
+            const myReportsList = document.getElementById('my-reports-list');
+            
+            if (!allReportsList || !myReportsList) return;
+
+            allReportsList.innerHTML = '';
+            myReportsList.innerHTML = '';
+
+            const createReportHTML = (user, time, content) => `
+                <div class="card space-y-8 border-l-8 border-l-green-600 bg-black/60">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-5">
+                            <img class="w-16 h-16 rounded-2xl border border-green-900/40 object-cover" src="${user.avatarUrl || user.discordAvatar || `https://ui-avatars.com/api/?name=${user.firstName}+${user.lastName}&background=000&color=22c55e`}">
+                            <div>
+                                <div class="font-black text-2xl text-white tracking-tight">${user.firstName} ${user.lastName}</div>
+                                <div class="text-[10px] text-green-500/60 font-mono font-black uppercase flex items-center gap-2 mt-1">
+                                    <i data-lucide="clock" size="12"></i>
+                                    ${time} | LOS SANTOS
+                                </div>
+                            </div>
+                        </div>
+                        <span class="px-5 py-2 bg-green-500/10 text-green-500 text-xs font-black uppercase rounded-xl border border-green-500/20 tracking-widest shadow-inner">Zatwierdzony</span>
+                    </div>
+                    <p class="text-gray-300 text-lg leading-relaxed font-medium italic opacity-90">
+                        "${content}"
+                    </p>
+                </div>
+            `;
+
+            const myReport = createReportHTML(
+                character, 
+                "24.03.2026 | 14:32", 
+                "Podczas dzisiejszego patrolu w sektorze C-4 doszło do zatrzymania pojazdu marki Bravado Buffalo. Kierowca nie posiadał wymaganych dokumentów oraz był pod wpływem środków odurzających. Służba przebiegła bez większych incydentów."
+            );
+
+            if (character.isAdmin) {
+                adminView.classList.remove('hidden');
+                userView.classList.add('hidden');
+                document.getElementById('reports-title').innerHTML = 'Archiwum <span class="text-blue-500">OsloRP</span> <span class="text-green-500">G6 (Admin)</span>';
+                document.getElementById('reports-subtitle').innerText = 'Pełny dostęp do bazy danych operacji wszystkich graczy.';
+                
+                allReportsList.innerHTML += myReport;
+                adminUsers.forEach(u => {
+                    allReportsList.innerHTML += createReportHTML(u, "24.03.2026 | 12:15", "Zabezpieczenie miejsca wypadku drogowego na autostradzie Senora. Brak ofiar śmiertelnych, ruch przywrócony po 45 minutach.");
+                });
+            } else {
+                adminView.classList.add('hidden');
+                userView.classList.remove('hidden');
+                document.getElementById('reports-title').innerHTML = 'Twoje <span class="text-green-500">Raporty</span>';
+                document.getElementById('reports-subtitle').innerText = 'Przeglądasz swoje indywidualne archiwum.';
+                
+                myReportsList.innerHTML += myReport;
+            }
+            
+            lucide.createIcons();
+        }
+
+        function updateActivityUI() {
+            const dot = document.getElementById('activity-dot');
+            const text = document.getElementById('activity-text');
+            const selfActiveCard = document.getElementById('self-active-card');
+            
+            if (character.isActive) {
+                if (dot) dot.className = 'w-2 h-2 bg-green-500 rounded-full animate-pulse shadow-[0_0_10px_#22c55e]';
+                if (text) {
+                    text.innerText = 'Aktywny na służbie';
+                    text.className = 'text-green-500 font-bold text-[10px] uppercase tracking-[0.2em]';
+                }
+                if (selfActiveCard) selfActiveCard.classList.remove('hidden');
+            } else {
+                if (dot) dot.className = 'w-2 h-2 bg-gray-500 rounded-full';
+                if (text) {
+                    text.innerText = 'Nieaktywny';
+                    text.className = 'text-gray-500 font-bold text-[10px] uppercase tracking-[0.2em]';
+                }
+                if (selfActiveCard) selfActiveCard.classList.add('hidden');
+            }
+
+            const allPlayersList = document.getElementById('all-players-list');
+            const activeDutyList = document.getElementById('active-duty-list');
+            
+            const registeredUsers = JSON.parse(localStorage.getItem('g6_registered_users') || '[]');
+            
+            const allPlayers = [
+                { ...character, id: "self", status: character.isActive ? "Online" : "Offline" },
+                ...registeredUsers.filter(u => u.nick !== character.nick).map(u => ({ ...u, status: "Offline" })),
+                ...adminUsers.filter(u => !registeredUsers.some(ru => ru.id === u.id)).map(u => ({ ...u, status: "Offline" }))
+            ];
+
+            const activePlayers = allPlayers.filter(p => p.status === "Online");
+
+            const renderPlayerCard = (user, isGrid = false) => {
+                const avatar = user.avatarUrl || user.discordAvatar || `https://ui-avatars.com/api/?name=${user.firstName}+${user.lastName}&background=000&color=22c55e`;
+                
+                if (isGrid) {
+                    return `
+                        <div onclick="viewUserProfile('${user.id}')" class="card space-y-6 hover:border-green-500/50 cursor-pointer transition-all group">
+                            <div class="flex items-center gap-4">
+                                <div class="relative">
+                                    <img src="${avatar}" class="w-16 h-16 rounded-2xl border border-green-900/40 object-cover">
+                                    <div class="absolute -bottom-1 -right-1 w-4 h-4 bg-${user.status === 'Online' ? 'green' : 'gray'}-500 border-2 border-black rounded-full"></div>
+                                </div>
+                                <div>
+                                    <div class="font-black text-xl text-white group-hover:text-green-400 transition-colors">${user.firstName} ${user.lastName}</div>
+                                    <div class="text-[10px] text-green-500 font-black uppercase tracking-widest">${user.rank}</div>
+                                </div>
+                            </div>
+                            <div class="pt-4 border-t border-green-900/20 space-y-3">
+                                <div class="flex justify-between text-xs">
+                                    <span class="text-gray-500 font-bold uppercase tracking-widest">Suma Raportów</span>
+                                    <span class="text-white font-black">${user.reports || 0}</span>
+                                </div>
+                                <div class="flex justify-between text-xs">
+                                    <span class="text-gray-500 font-bold uppercase tracking-widest">Czas Służby</span>
+                                    <span class="text-green-500 font-black">${user.hours}H</span>
+                                </div>
+                                ${user.subunit ? `<div class="subunit-badge w-fit text-[8px] py-0.5 mt-2">${user.subunit}</div>` : ''}
+                            </div>
+                        </div>
+                    `;
+                }
+
+                return `
+                    <div onclick="viewUserProfile('${user.id}')" class="card bg-black/40 border-green-900/20 flex items-center gap-4 p-4 cursor-pointer hover:bg-green-500/5 transition-all">
+                        <div class="relative">
+                            <img src="${avatar}" class="w-12 h-12 rounded-xl border border-green-500/30 object-cover">
+                            <div class="absolute -bottom-1 -right-1 w-3 h-3 bg-green-500 rounded-full border-2 border-black"></div>
+                        </div>
+                        <div>
+                            <div class="font-black text-white text-sm uppercase">${user.firstName} ${user.lastName}</div>
+                            <div class="text-[9px] text-green-500 font-black uppercase tracking-widest">${user.rank} | ${user.status}</div>
+                            ${user.subunit ? `<div class="subunit-badge w-fit text-[7px] py-0 mt-1">${user.subunit}</div>` : ''}
+                        </div>
+                    </div>
+                `;
+            };
+
+            if (activeDutyList) activeDutyList.innerHTML = activePlayers.map(u => renderPlayerCard(u, false)).join('');
+            if (allPlayersList) allPlayersList.innerHTML = allPlayers.map(u => renderPlayerCard(u, true)).join('');
+            
+            lucide.createIcons();
+        }
+
+        function toggleSettingsModal() {
+            const modal = document.getElementById('settings-modal');
+            modal.classList.toggle('hidden');
+            
+            if (!modal.classList.contains('hidden')) {
+                const themeColor = character.themeColor || "#22C55E";
+                document.getElementById('settings-theme-color').value = themeColor;
+                document.getElementById('settings-theme-color-hex').value = themeColor.toUpperCase();
+
+                const passSection = document.getElementById('settings-password-section');
+                if (character.nick) {
+                    passSection.classList.remove('hidden');
+                } else {
+                    passSection.classList.add('hidden');
+                }
+            }
+            lucide.createIcons();
+        }
+
+        function saveSettings() {
+            const newPassword = document.getElementById('settings-new-password').value;
+            const confirmPassword = document.getElementById('settings-confirm-password').value;
+            const themeColor = document.getElementById('settings-theme-color').value;
+
+            // Password reset logic
+            if (character.nick && newPassword) {
+                if (newPassword !== confirmPassword) {
+                    showNotification("Błąd", "Hasła nie są identyczne!", "error");
+                    return;
+                }
+                const users = JSON.parse(localStorage.getItem('g6_registered_users') || '[]');
+                const index = users.findIndex(u => u.nick === character.nick);
+                if (index !== -1) {
+                    users[index].password = newPassword;
+                    localStorage.setItem('g6_registered_users', JSON.stringify(users));
+                    showNotification("Sukces", "Hasło zostało zmienione pomyślnie.", "success");
+                    addLog(`Użytkownik ${character.nick} zmienił swoje hasło.`);
+                }
+            }
+
+            character.themeColor = themeColor;
+            applyThemeColor(character.themeColor);
+            saveCharacterToLocalStorage();
+            
+            showNotification("System", "Ustawienia zostały pomyślnie zaktualizowane.", "success");
+            addLog(`Użytkownik ${character.firstName} ${character.lastName} zaktualizował ustawienia (kolor/hasło).`);
+            
+            // Clear password fields
+            document.getElementById('settings-new-password').value = '';
+            document.getElementById('settings-confirm-password').value = '';
+            
+            toggleSettingsModal();
+        }
+
+        function toggleEditModal() {
+            const modal = document.getElementById('edit-modal');
+            modal.classList.toggle('hidden');
+            
+            if (!modal.classList.contains('hidden')) {
+                document.getElementById('edit-first-name').value = character.firstName;
+                document.getElementById('edit-last-name').value = character.lastName;
+                document.getElementById('edit-badge').value = character.badge;
+                document.getElementById('edit-rank').value = character.rank;
+                document.getElementById('edit-hours').value = character.hours;
+                document.getElementById('edit-subunit').value = character.subunit || "";
+                document.getElementById('edit-birth-date').value = character.birthDate || "";
+                document.getElementById('edit-avatar-url').value = character.avatarUrl || "";
+                document.getElementById('edit-banner-url').value = character.bannerUrl || "";
+                
+                document.getElementById('edit-modal-title').innerText = "Edytuj Twój Profil";
+                document.getElementById('admin-achievements-edit').classList.add('hidden');
+                document.getElementById('save-character-btn').onclick = saveCharacter;
+            }
+            lucide.createIcons();
+        }
+
+        function saveCharacter() {
+            const oldName = `${character.firstName} ${character.lastName}`;
+
+            character.firstName = document.getElementById('edit-first-name').value;
+            character.lastName = document.getElementById('edit-last-name').value;
+            character.badge = document.getElementById('edit-badge').value;
+            character.rank = document.getElementById('edit-rank').value;
+            character.hours = parseInt(document.getElementById('edit-hours').value);
+            character.subunit = document.getElementById('edit-subunit').value;
+            character.birthDate = document.getElementById('edit-birth-date').value;
+            character.avatarUrl = document.getElementById('edit-avatar-url').value;
+            character.bannerUrl = document.getElementById('edit-banner-url').value;
+
+            saveCharacterToLocalStorage();
+            renderAllCharacterData();
+
+            showNotification("System", "Profil został pomyślnie zaktualizowany.", "success");
+            addLog(`Użytkownik ${oldName} zaktualizował swój profil.`);
+            
+            toggleEditModal();
+        }
+
+        function toggleReportForm(forceShow = false) {
+            const form = document.getElementById('report-form-container');
+            if (forceShow) {
+                showView('reports');
+                form.classList.remove('hidden');
+            } else {
+                form.classList.toggle('hidden');
+            }
+            lucide.createIcons();
+        }
+
+        function previewImage(event) {
+            const container = document.getElementById('image-preview-container');
+            const uploadLabel = document.getElementById('upload-label');
+            const img = document.getElementById('image-preview');
+            const file = event.target.files[0];
+            
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    img.src = e.target.result;
+                    container.classList.remove('hidden');
+                    uploadLabel.classList.add('hidden');
+                }
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function removeImage() {
+            const container = document.getElementById('image-preview-container');
+            const uploadLabel = document.getElementById('upload-label');
+            const img = document.getElementById('image-preview');
+            img.src = "";
+            container.classList.add('hidden');
+            uploadLabel.classList.remove('hidden');
+        }
+
+        function submitReport() {
+            const content = document.getElementById('report-content').value;
+            if (!content) {
+                alert("BŁĄD: Wprowadź treść protokołu!");
+                return;
+            }
+            
+            showNotification("<span class=\"text-blue-500\">OsloRP</span> G6 System", "Nowy raport został pomyślnie zarchiwizowany.", "success");
+            addLog(`Użytkownik ${character.firstName} ${character.lastName} dodał nowy raport.`);
+            
+            setTimeout(() => {
+                showNotification("Nowy Raport", `Oficer John Doe dodał nowy protokół służbowy.`, "info");
+            }, 5000);
+
+            document.getElementById('report-content').value = "";
+            removeImage();
+            toggleReportForm();
+        }
+
+        function toggleEventForm() {
+            const form = document.getElementById('event-form-container');
+            form.classList.toggle('hidden');
+            lucide.createIcons();
+        }
+
+        let eventImageData = null;
+
+        function previewEventImage(event) {
+            const container = document.getElementById('event-image-preview-container');
+            const uploadLabel = document.getElementById('event-upload-label');
+            const img = document.getElementById('event-image-preview');
+            const file = event.target.files[0];
+            
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    eventImageData = e.target.result;
+                    img.src = e.target.result;
+                    container.classList.remove('hidden');
+                    uploadLabel.classList.add('hidden');
+                }
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function removeEventImage() {
+            const container = document.getElementById('event-image-preview-container');
+            const uploadLabel = document.getElementById('event-upload-label');
+            const img = document.getElementById('event-image-preview');
+            img.src = "";
+            eventImageData = null;
+            container.classList.add('hidden');
+            uploadLabel.classList.remove('hidden');
+        }
+
+        function submitEvent() {
+            const title = document.getElementById('event-title').value;
+            const content = document.getElementById('event-content').value;
+            
+            if (!title || !content) {
+                alert("BŁĄD: Wypełnij wszystkie pola wydarzenia!");
+                return;
+            }
+
+            const eventsList = document.getElementById('events-list');
+            const eventCard = document.createElement('div');
+            eventCard.className = 'card p-0 overflow-hidden border-green-500/20 group animate-in zoom-in-95 duration-500';
+            
+            const imageHtml = eventImageData 
+                ? `<img src="${eventImageData}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">`
+                : `<div class="w-full h-full bg-green-900/20 flex items-center justify-center"><i data-lucide="megaphone" class="text-green-500 w-16 h-16 opacity-20"></i></div>`;
+
+            eventCard.innerHTML = `
+                <div class="h-48 overflow-hidden relative">
+                    ${imageHtml}
+                    <div class="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent"></div>
+                    <div class="absolute bottom-6 left-8">
+                        <span class="px-3 py-1 bg-green-500 text-black text-[9px] font-black uppercase rounded-lg tracking-widest">Nowe</span>
+                        <h3 class="text-2xl font-black text-white uppercase tracking-tighter mt-2">${title}</h3>
+                    </div>
+                </div>
+                <div class="p-8 space-y-4">
+                    <p class="text-gray-400 text-sm leading-relaxed">${content}</p>
+                    <div class="flex items-center justify-between pt-4 border-t border-green-900/20">
+                        <div class="flex items-center gap-3">
+                            <i data-lucide="clock" class="text-green-500" size="16"></i>
+                            <span class="text-[10px] text-gray-500 font-black uppercase tracking-widest">Dzisiaj | ${new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
+                        </div>
+                        <div class="text-[10px] text-gray-500 font-black uppercase tracking-widest">Autor: ${character.firstName} ${character.lastName}</div>
+                    </div>
+                </div>
+            `;
+            
+            eventsList.prepend(eventCard);
+            showNotification("NOWY EVENT!", `Opublikowano: ${title}`, "success");
+            addLog(`Użytkownik ${character.firstName} ${character.lastName} opublikował nowe wydarzenie: ${title}`);
+            
+            document.getElementById('event-title').value = "";
+            document.getElementById('event-content').value = "";
+            removeEventImage();
+            toggleEventForm();
+            lucide.createIcons();
+        }
+
+        function showNotification(title, message, type = 'info') {
+            const container = document.getElementById('notification-container');
+            const notification = document.createElement('div');
+            notification.className = `notification ${type === 'ping' ? 'ping' : ''}`;
+            
+            notification.innerHTML = `
+                <div class="flex items-start gap-4">
+                    <div class="p-2 bg-green-500/10 rounded-lg text-green-500">
+                        <i data-lucide="${type === 'ping' ? 'bell-ring' : 'info'}" size="20"></i>
+                    </div>
+                    <div>
+                        <div class="font-black text-white uppercase text-xs tracking-widest">${title}</div>
+                        <p class="text-xs text-gray-400 mt-1">${message}</p>
+                    </div>
+                </div>
+            `;
+            
+            container.appendChild(notification);
+            lucide.createIcons();
+            
+            setTimeout(() => {
+                notification.style.animation = 'fadeOut 0.5s ease forwards';
+                setTimeout(() => notification.remove(), 500);
+            }, 5000);
+        }
+
+        function toggleVacationForm() {
+            const form = document.getElementById('vacation-form-container');
+            form.classList.toggle('hidden');
+            lucide.createIcons();
+        }
+
+        function submitVacation() {
+            const startDate = document.getElementById('vacation-start-date').value;
+            const startTime = document.getElementById('vacation-start-time').value;
+            const endDate = document.getElementById('vacation-end-date').value;
+            const endTime = document.getElementById('vacation-end-time').value;
+            const reason = document.getElementById('vacation-reason').value;
+
+            if (!startDate || !startTime || !endDate || !endTime || !reason) {
+                alert("BŁĄD: Proszę wypełnić wszystkie pola wniosku!");
+                return;
+            }
+
+            const newVacation = {
+                id: Date.now(),
+                startDate,
+                startTime,
+                endDate,
+                endTime,
+                reason,
+                status: 'Oczekiwanie',
+                timestamp: new Date().toISOString()
+            };
+
+            const vacations = JSON.parse(localStorage.getItem('g6_vacations') || '[]');
+            vacations.unshift(newVacation);
+            localStorage.setItem('g6_vacations', JSON.stringify(vacations));
+
+            renderVacations();
+            toggleVacationForm();
+            showNotification("System Urlopowy", "Twój wniosek o urlop został wysłany do dowództwa.", "success");
+            addLog(`Użytkownik ${character.firstName} ${character.lastName} złożył nowy wniosek o urlop.`);
+            
+            document.getElementById('vacation-start-date').value = '';
+            document.getElementById('vacation-start-time').value = '';
+            document.getElementById('vacation-end-date').value = '';
+            document.getElementById('vacation-end-time').value = '';
+            document.getElementById('vacation-reason').value = '';
+        }
+
+        function renderVacations() {
+            const list = document.getElementById('vacations-list');
+            const vacations = JSON.parse(localStorage.getItem('g6_vacations') || '[]');
+            
+            if (vacations.length === 0) {
+                list.innerHTML = `
+                    <div class="card bg-black/40 border-green-900/20 text-center py-12">
+                        <i data-lucide="plane" class="mx-auto text-green-900/40 w-16 h-16 mb-4"></i>
+                        <p class="text-gray-500 font-black uppercase tracking-widest text-xs">Brak złożonych wniosków urlopowych</p>
+                    </div>
+                `;
+            } else {
+                list.innerHTML = vacations.map(v => `
+                    <div class="card bg-black/40 border-green-900/20 flex flex-col md:flex-row md:items-center justify-between gap-8 p-8 animate-in slide-in-from-right-4 duration-300">
+                        <div class="flex items-center gap-6">
+                            <div class="p-4 bg-green-500/10 rounded-2xl text-green-500 border border-green-500/20">
+                                <i data-lucide="plane" size="28"></i>
+                            </div>
+                            <div>
+                                <div class="text-white font-black text-xl uppercase tracking-tight">Urlop Operacyjny</div>
+                                <div class="text-gray-500 text-[10px] font-black uppercase tracking-widest mt-1">Status: <span class="${v.status === 'Oczekiwanie' ? 'text-yellow-500' : 'text-green-500'}">${v.status}</span></div>
+                            </div>
+                        </div>
+                        <div class="flex flex-col md:flex-row gap-12">
+                            <div class="text-center md:text-left">
+                                <div class="text-[9px] text-green-500/60 font-black uppercase tracking-widest mb-1">Początek</div>
+                                <div class="text-white font-bold text-sm">${v.startDate.split('-').reverse().join('.')} | ${v.startTime}</div>
+                            </div>
+                            <div class="text-center md:text-left">
+                                <div class="text-[9px] text-green-500/60 font-black uppercase tracking-widest mb-1">Koniec</div>
+                                <div class="text-white font-bold text-sm">${v.endDate.split('-').reverse().join('.')} | ${v.endTime}</div>
+                            </div>
+                        </div>
+                        <button onclick="deleteVacation(${v.id})" class="text-red-500/40 hover:text-red-500 transition-colors p-2">
+                            <i data-lucide="trash-2" size="18"></i>
+                        </button>
+                    </div>
+                `).join('');
+            }
+            lucide.createIcons();
+        }
+
+        function deleteVacation(id) {
+            if (confirm("Czy na pewno chcesz usunąć ten wniosek?")) {
+                let vacations = JSON.parse(localStorage.getItem('g6_vacations') || '[]');
+                vacations = vacations.filter(v => v.id !== id);
+                localStorage.setItem('g6_vacations', JSON.stringify(vacations));
+                renderVacations();
+                showNotification("System", "Wniosek został usunięty.", "info");
+                addLog(`Użytkownik ${character.firstName} ${character.lastName} usunął swój wniosek o urlop.`);
+            }
+        }
+    </script>
+</body>
+</html>
